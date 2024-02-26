@@ -103,7 +103,6 @@ export default function InputForm() {
               className="shadow appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               value={formData.fullName}
               onChange={handleChange}
-              placeholder="John Doe"
             />
             {errors.fullName && (
               <p className="text-red-500 text-xs italic">{errors.fullName}</p>
@@ -123,7 +122,6 @@ export default function InputForm() {
               className="shadow appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               value={formData.phoneNumber}
               onChange={handleChange}
-              placeholder="962123456789"
             />
             {errors.phoneNumber && (
               <p className="text-red-500 text-xs italic">
@@ -145,7 +143,6 @@ export default function InputForm() {
               className="shadow appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               value={formData.email}
               onChange={handleChange}
-              placeholder="john.doe@emai.com"
             />
             {errors.email && (
               <p className="text-red-500 text-xs italic">{errors.email}</p>
