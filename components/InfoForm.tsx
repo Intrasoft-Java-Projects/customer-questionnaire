@@ -86,7 +86,7 @@ export default function InputForm() {
         className="mx-auto"
       />
       {submitted ? (
-        <h1 className="text-4xl font-bold text-primary mb-4">Thank you</h1>
+        <h1 className="text-2xl text-primary mb-4"><a target="_blank" href="http://ec2-52-58-45-0.eu-central-1.compute.amazonaws.com">Visit Website</a></h1>
       ) : (
         <form className="bg-white py-6 px-3 rounded" onSubmit={handleSubmit}>
           <div className="mb-4">
