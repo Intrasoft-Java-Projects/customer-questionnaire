@@ -8,6 +8,8 @@ type Inputs = {
   fullName: string;
   phoneNumber: string;
   email?: string;
+  bankName?: string;
+  position?: string;
 };
 
 export default function InputForm() {
@@ -15,11 +17,15 @@ export default function InputForm() {
     fullName: "",
     phoneNumber: "",
     email: "",
+    bankName: "",
+    position: "",
   });
   const [errors, setErrors] = useState<Inputs>({
     fullName: "",
     phoneNumber: "",
     email: "",
+    bankName: "",
+    position: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -52,11 +58,11 @@ export default function InputForm() {
       setLoading(true);
       const supabase = createClient();
       // Handle form submission here
-      const { fullName, phoneNumber, email } = formData;
+      const { fullName, phoneNumber, email, bankName, position } = formData;
 
       const result = await supabase
         .from("customers")
-        .insert({ full_name: fullName, phone_number: phoneNumber, email });
+        .insert({ full_name: fullName, phone_number: phoneNumber, email, bank_name: bankName, position });
 
       console.log(result);
 
@@ -67,8 +73,8 @@ export default function InputForm() {
   };
 
   const clearForm = () => {
-    setFormData({ fullName: "", phoneNumber: "", email: "" });
-    setErrors({ fullName: "", phoneNumber: "", email: "" });
+    setFormData({ fullName: "", phoneNumber: "", email: "", bankName: "", position: "" });
+    setErrors({ fullName: "", phoneNumber: "", email: "", bankName: "", position: "" });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -147,6 +153,38 @@ export default function InputForm() {
             {errors.email && (
               <p className="text-red-500 text-xs italic">{errors.email}</p>
             )}
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="bankName"
+              className="block text-primary text-sm font-bold mb-2"
+            >
+              Bank Name (Optional)
+            </label>
+            <input
+              type="text"
+              name="bankName"
+              id="bankName"
+              className="shadow appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value={formData.bankName}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="position"
+              className="block text-primary text-sm font-bold mb-2"
+            >
+              Position (Optional)
+            </label>
+            <input
+              type="text"
+              name="position"
+              id="position"
+              className="shadow appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value={formData.position}
+              onChange={handleChange}
+            />
           </div>
           <div className="flex items-center justify-center">
             <button
