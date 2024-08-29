@@ -36,9 +36,15 @@ export default function InputForm() {
     const tempErrors: Inputs = {
       fullName: "",
       phoneNumber: "",
+      email:"",
+      bankName:"",
+      position:""
     };
     tempErrors.fullName = formData.fullName ? "" : "Full name is required.";
+    tempErrors.bankName = formData.bankName ? "" : "Bank name is required.";
+    tempErrors.position = formData.position ? "" : "Position is required.";
     tempErrors.phoneNumber = formData.phoneNumber
+    
       ? /\d{10}/.test(formData.phoneNumber)
         ? ""
         : "Phone number is not valid."
@@ -47,7 +53,7 @@ export default function InputForm() {
       ? /\S+@\S+\.\S+/.test(formData.email)
         ? ""
         : "Email is not valid."
-      : "";
+      : "Email is required.";
     setErrors({ ...tempErrors });
     return Object.values(tempErrors).every((x) => x === "");
   };
@@ -140,7 +146,7 @@ export default function InputForm() {
               htmlFor="email"
               className="block text-primary text-sm font-bold mb-2"
             >
-              Email (Optional)
+              Email 
             </label>
             <input
               type="email"
@@ -159,7 +165,7 @@ export default function InputForm() {
               htmlFor="bankName"
               className="block text-primary text-sm font-bold mb-2"
             >
-              Bank Name (Optional)
+              Bank Name 
             </label>
             <input
               type="text"
@@ -169,13 +175,16 @@ export default function InputForm() {
               value={formData.bankName}
               onChange={handleChange}
             />
+            {errors.bankName && (
+              <p className="text-red-500 text-xs italic">{errors.bankName}</p>
+            )}
           </div>
           <div className="mb-4">
             <label
               htmlFor="position"
               className="block text-primary text-sm font-bold mb-2"
             >
-              Position (Optional)
+              Position 
             </label>
             <input
               type="text"
@@ -185,6 +194,9 @@ export default function InputForm() {
               value={formData.position}
               onChange={handleChange}
             />
+            {errors.position && (
+              <p className="text-red-500 text-xs italic">{errors.position}</p>
+            )}
           </div>
           <div className="flex items-center justify-center">
             <button
