@@ -13,47 +13,53 @@ type Inputs = {
   contactEmail: string;
   contactNumber: string;
   descriptionOrg: File | null;
-  general1: number;
-  general2: number;
-  general3: number;
+  general1: string;
+  general2: string;
+  general3: string;
   general3Input: string;
   general4: string;
   financial1: string;
   financial2: string;
   financial3: string;
-  financial4: number;
-  financial5: number;
+  financial4: string;
+  financial5: string;
   scm1: string;
   scm2: string;
   scm3: string;
-  scm4: number;
-  scm5: number;
+  scm4: string;
+  scm5: string;
   hr1: string;
   hr2: string;
-  hr3: number;
-  hr4: number;
-  hr5: number;
+  hr3: string;
+  hr4: string;
+  hr5: string;
   pm1: string;
-  pm2: number;
-  pm3: number;
-  pm4: number;
-  rem1: number;
-  rem2: number;
-  rem3: number;
-  rem4: number;
+  pm2: string;
+  pm3: string;
+  pm4: string;
+  rem1: string;
+  rem2: string;
+  rem3: string;
+  rem4: string;
   sidm1: string;
-  sidm2: number;
+  sidm2: string;
   sidm3: string;
   sidm4: string;
-  security1: number;
-  security2: number;
+  security1: string;
+  security2: string;
   report1: string;
-  report2: number;
-  report3: number;
+  report2: string;
+  report3: string;
   training1: string;
-  training2: number;
+  training2: string;
   training3: string;
-  training4: number;
+  training4: string;
+  erp1: string;
+  erp1Input: string;
+  erp1Select: string;
+  erp2: string;
+  erp2Input: string;
+  erp3: string;
 };
 
 export default function InputForm() {
@@ -63,47 +69,53 @@ export default function InputForm() {
     contactEmail: "",
     contactNumber: "",
     descriptionOrg: null,
-    general1: 0,
-    general2: 0,
-    general3: 0,
+    general1: "",
+    general2: "",
+    general3: "",
     general3Input: "",
     general4: "",
     financial1: "",
     financial2: "",
     financial3: "",
-    financial4: 0,
-    financial5: 0,
+    financial4: "",
+    financial5: "",
     scm1: "",
     scm2: "",
     scm3: "",
-    scm4: 0,
-    scm5: 0,
+    scm4: "",
+    scm5: "",
     hr1: "",
     hr2: "",
-    hr3: 0,
-    hr4: 0,
-    hr5: 0,
+    hr3: "",
+    hr4: "",
+    hr5: "",
     pm1: "",
-    pm2: 0,
-    pm3: 0,
-    pm4: 0,
-    rem1: 0,
-    rem2: 0,
-    rem3: 0,
-    rem4: 0,
+    pm2: "",
+    pm3: "",
+    pm4: "",
+    rem1: "",
+    rem2: "",
+    rem3: "",
+    rem4: "",
     sidm1: "",
-    sidm2: 0,
+    sidm2: "",
     sidm3: "",
     sidm4: "",
-    security1: 0,
-    security2: 0,
+    security1: "",
+    security2: "",
     report1: "",
-    report2: 0,
-    report3: 0,
+    report2: "",
+    report3: "",
     training1: "",
-    training2: 0,
+    training2: "",
     training3: "",
-    training4: 0,
+    training4: "",
+    erp1: "",
+    erp1Input: "",
+    erp1Select: "",
+    erp2: "",
+    erp2Input: "",
+    erp3: "",
   });
 
   const [errors, setErrors] = useState<Partial<Inputs>>({});
@@ -191,7 +203,8 @@ export default function InputForm() {
       sidm1, sidm2, sidm3, sidm4,
       security1, security2,
       report1, report2, report3,
-      training1, training2, training3, training4
+      training1, training2, training3, training4,
+      erp1, erp1Input, erp1Select, erp2, erp2Input, erp3
     } = formData;
 
     const { data: insertData, error: insertError } = await supabase
@@ -219,7 +232,8 @@ export default function InputForm() {
         sidm1, sidm2, sidm3, sidm4,
         security1, security2,
         report1, report2, report3,
-        training1, training2, training3, training4
+        training1, training2, training3, training4,
+        erp1, erp1_input: erp1Input, erp1_select: erp1Select, erp2, erp2_input: erp2Input, erp3
       });
 
     if (insertError) {
@@ -240,47 +254,53 @@ export default function InputForm() {
       contactEmail: "",
       contactNumber: "",
       descriptionOrg: null,
-      general1: 0,
-      general2: 0,
-      general3: 0,
+      general1: "",
+      general2: "",
+      general3: "",
       general3Input: "",
       general4: "",
       financial1: "",
       financial2: "",
       financial3: "",
-      financial4: 0,
-      financial5: 0,
+      financial4: "",
+      financial5: "",
       scm1: "",
       scm2: "",
       scm3: "",
-      scm4: 0,
-      scm5: 0,
+      scm4: "",
+      scm5: "",
       hr1: "",
       hr2: "",
-      hr3: 0,
-      hr4: 0,
-      hr5: 0,
+      hr3: "",
+      hr4: "",
+      hr5: "",
       pm1: "",
-      pm2: 0,
-      pm3: 0,
-      pm4: 0,
-      rem1: 0,
-      rem2: 0,
-      rem3: 0,
-      rem4: 0,
+      pm2: "",
+      pm3: "",
+      pm4: "",
+      rem1: "",
+      rem2: "",
+      rem3: "",
+      rem4: "",
       sidm1: "",
-      sidm2: 0,
+      sidm2: "",
       sidm3: "",
       sidm4: "",
-      security1: 0,
-      security2: 0,
+      security1: "",
+      security2: "",
       report1: "",
-      report2: 0,
-      report3: 0,
+      report2: "",
+      report3: "",
       training1: "",
-      training2: 0,
+      training2: "",
       training3: "",
-      training4: 0,
+      training4: "",
+      erp1: "",
+      erp1Input: "",
+      erp1Select: "",
+      erp2: "",
+      erp2Input: "",
+      erp3: "",
     });
     setErrors({});
   };
@@ -299,7 +319,17 @@ export default function InputForm() {
         || name === "security1" || name === "security2"
         || name === "report2" || name === "report3"
         || name === "training2" || name === "training4"
-        ? Number(value) : value,
+        || name === "erp1" || name === "erp2"
+        ? String(value) : value,
+    }));
+  };
+
+  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: name === "erp1Select" || name === "erp3"
+        ? String(value) : value,
     }));
   };
 
@@ -308,10 +338,16 @@ export default function InputForm() {
     setFormData((prevData) => ({ ...prevData, descriptionOrg: file }));
   };
 
+  let sectionCounter = 1;
+
   return (
     <div className="flex flex-col items-center justify-center bg-gray-50">
       <Image alt="logo" src="/netcompany-intrasoft-logo.jpg" width={200} height={200} className="mb-4" />
-      <h1 className="text-2xl font-bold text-primary mb-6">ERP Preference Questionnaire</h1>
+      <h1 className="text-2xl font-bold text-primary mb-6">ERP Discovery Questionnaire</h1>
+
+      <div className="p-8 max-w-3xl w-full">
+        <h3 className="font-bold text-primary">This questionnaire is conducted with the utmost confidentiality, and all responses will be kept strictly confidential.</h3>
+      </div>
 
       {submitted ? (
         <h1 className="text-2xl text-green-600 mb-4 font-semibold">Thank you for submitting!</h1>
@@ -335,11 +371,99 @@ export default function InputForm() {
             </label>
           </fieldset>
 
-          {/* 1. General */}
           <fieldset className="mb-6">
-            <legend>1. General</legend>
+            <legend>{sectionCounter++}. Exploring ERP System Preferences</legend>
 
-            {/* Description */}
+            <label className="block mt-4 mb-2">
+              - Are you currently using any ERP system?
+            </label>
+            <div className="flex">
+              <div className="flex items-center mr-4">
+                <input type="radio" name="erp1" value="Yes" checked={formData.erp1 === "Yes"} onChange={handleChange} />
+                <label className="ml-2">Yes</label>
+              </div>
+              <div className="flex items-center mr-4">
+                <input type="radio" name="erp1" value="No" checked={formData.erp1 === "No"} onChange={handleChange} />
+                <label className="ml-2">No</label>
+              </div>
+              <div className="flex items-center mr-4">
+                <input type="radio" name="erp1" value="Not Sure" checked={formData.erp1 === "Not Sure"} onChange={handleChange} />
+                <label className="ml-2">Not Sure</label>
+              </div>
+            </div>
+
+            <label htmlFor="erp1Input" className="block mt-2 mb-2">
+              If yes, please specify the system and how satisfied are you with your current ERP system?
+            </label>
+            <div className="grid gap-6 mb-6 md:grid-cols-2">
+              <input type="text" name="erp1Input" id="erp1Input" className="w-full p-2 border rounded" value={formData.erp1Input} onChange={handleChange} />
+              <select
+                name="erp1Select"
+                id="erp1Select"
+                className="w-full p-2 border rounded"
+                value={formData.erp1Select || "No Choose"} // Sets default value
+                onChange={handleSelect}
+              >
+                <option>Choose satisfaction level</option> {/* Disabled default placeholder */}
+                <option value="Very Satisfied">Very Satisfied</option>
+                <option value="Satisfied">Satisfied</option>
+                <option value="Neutral">Neutral</option>
+                <option value="Dissatisfied">Dissatisfied</option>
+                <option value="Very Dissatisfied">Very Dissatisfied</option>
+              </select>
+            </div>
+            <hr className="mt-5 mb-5" />
+
+            <label className="block mt-4 mb-2">
+              - Which ERP system are you considering or would prefer?
+            </label>
+            <div className="flex">
+              <div className="flex items-center mr-4">
+                <input type="radio" name="erp2" value="SAP" checked={formData.erp2 === "SAP"} onChange={handleChange} />
+                <label className="ml-2">SAP</label>
+              </div>
+              <div className="flex items-center mr-4">
+                <input type="radio" name="erp2" value="Oracle" checked={formData.erp2 === "Oracle"} onChange={handleChange} />
+                <label className="ml-2">Oracle</label>
+              </div>
+              <div className="flex items-center mr-4">
+                <input type="radio" name="erp2" value="Undecided" checked={formData.erp2 === "Undecided"} onChange={handleChange} />
+                <label className="ml-2">Undecided</label>
+              </div>
+              <div className="flex items-center mr-4">
+                <input type="radio" name="erp2" value="Other" checked={formData.erp2 === "Other"} onChange={handleChange} />
+                <label className="ml-2">Other</label>
+              </div>
+            </div>
+
+            <label htmlFor="erp2Input" className="block mt-2 mb-2">
+              If other, please specify:
+            </label>
+            <input type="text" name="erp2Input" id="erp2Input" className="w-full p-2 border rounded" value={formData.erp2Input} onChange={handleChange} />
+
+            <hr className="mt-5 mb-5" />
+
+            <label htmlFor="erp3" className="block mt-2 mb-2">
+              - What is the preferred deployment option?
+            </label>
+            <select
+              name="erp3"
+              id="erp3"
+              className="w-full p-2 border rounded"
+              value={formData.erp3 || "No Choose"} // Sets default value
+              onChange={handleSelect}
+            >
+              <option>Choose preferred deployment option</option> {/* Disabled default placeholder */}
+              <option value="Cloud">Cloud</option>
+              <option value="On-Premise">On-Premise</option>
+              <option value="Hybrid">Hybrid</option>
+              <option value="Not Sure">Not Sure</option>
+            </select>
+          </fieldset>
+
+          <fieldset className="mb-6">
+            <legend>{sectionCounter++}. General</legend>
+
             <label htmlFor="descriptionOrg" className="block mb-2">
               - Please provide minimum one-page high-level description about your organization including; industry, market, core products, and services, illustrating business process the revenue cycle and it related cost per each legal entity if there is more than one legal entity within your organization.
             </label>
@@ -354,63 +478,60 @@ export default function InputForm() {
 
             <hr className="mt-5 mb-5" />
 
-            {/* general1 Radio Group */}
             <label className="block mt-4 mb-2">
               - Is your organization willing to adopt the best business practices offered by the standard tier one ERP applications?
             </label>
             <div className="flex">
               <div className="flex items-center mr-4">
-                <input type="radio" name="general1" value="1" checked={formData.general1 === 1} onChange={handleChange} />
+                <input type="radio" name="general1" value="Yes" checked={formData.general1 === "Yes"} onChange={handleChange} />
                 <label className="ml-2">Yes</label>
               </div>
               <div className="flex items-center mr-4">
-                <input type="radio" name="general1" value="2" checked={formData.general1 === 2} onChange={handleChange} />
+                <input type="radio" name="general1" value="No" checked={formData.general1 === "No"} onChange={handleChange} />
                 <label className="ml-2">No</label>
               </div>
               <div className="flex items-center mr-4">
-                <input type="radio" name="general1" value="3" checked={formData.general1 === 3} onChange={handleChange} />
+                <input type="radio" name="general1" value="Not Sure" checked={formData.general1 === "Not Sure"} onChange={handleChange} />
                 <label className="ml-2">Not Sure</label>
               </div>
             </div>
 
             <hr className="mt-5 mb-5" />
 
-            {/* general2 Radio Group */}
             <label className="block mt-4 mb-2">
               - Is your organization willing to implement change management for adopting the standard tier one ERP applications?
             </label>
             <div className="flex">
               <div className="flex items-center mr-4">
-                <input type="radio" name="general2" value="1" checked={formData.general2 === 1} onChange={handleChange} />
+                <input type="radio" name="general2" value="Yes" checked={formData.general2 === "Yes"} onChange={handleChange} />
                 <label className="ml-2">Yes</label>
               </div>
               <div className="flex items-center mr-4">
-                <input type="radio" name="general2" value="2" checked={formData.general2 === 2} onChange={handleChange} />
+                <input type="radio" name="general2" value="No" checked={formData.general2 === "No"} onChange={handleChange} />
                 <label className="ml-2">No</label>
               </div>
               <div className="flex items-center mr-4">
-                <input type="radio" name="general2" value="3" checked={formData.general2 === 3} onChange={handleChange} />
+                <input type="radio" name="general2" value="Not Sure" checked={formData.general2 === "Not Sure"} onChange={handleChange} />
                 <label className="ml-2">Not Sure</label>
               </div>
             </div>
 
             <hr className="mt-5 mb-5" />
 
-            {/* general3 Radio Group */}
             <label className="block mt-4 mb-2">
               - Do you believe your organization has a unique requirement?
             </label>
             <div className="flex">
               <div className="flex items-center mr-4">
-                <input type="radio" name="general3" value="1" checked={formData.general3 === 1} onChange={handleChange} />
+                <input type="radio" name="general3" value="Yes" checked={formData.general3 === "Yes"} onChange={handleChange} />
                 <label className="ml-2">Yes</label>
               </div>
               <div className="flex items-center mr-4">
-                <input type="radio" name="general3" value="2" checked={formData.general3 === 2} onChange={handleChange} />
+                <input type="radio" name="general3" value="No" checked={formData.general3 === "No"} onChange={handleChange} />
                 <label className="ml-2">No</label>
               </div>
               <div className="flex items-center mr-4">
-                <input type="radio" name="general3" value="3" checked={formData.general3 === 3} onChange={handleChange} />
+                <input type="radio" name="general3" value="Not Sure" checked={formData.general3 === "Not Sure"} onChange={handleChange} />
                 <label className="ml-2">Not Sure</label>
               </div>
             </div>
@@ -422,7 +543,6 @@ export default function InputForm() {
 
             <hr className="mt-5 mb-5" />
 
-            {/* general4 Text Input */}
             <label htmlFor="general4" className="block mt-4 mb-2">
               - What is your expectation for the Project plan duration?
             </label>
@@ -431,7 +551,7 @@ export default function InputForm() {
           </fieldset>
 
           <fieldset className="mb-6">
-            <legend>2. Financials Module</legend>
+            <legend>{sectionCounter++}. Financials Module</legend>
 
             <fieldset className="mb-6">
               <legend className="subLegend">Current Processes and Requirements</legend>
@@ -465,15 +585,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="financial4" value="1" checked={formData.financial4 === 1} onChange={handleChange} />
+                  <input type="radio" name="financial4" value="Yes" checked={formData.financial4 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="financial4" value="2" checked={formData.financial4 === 2} onChange={handleChange} />
+                  <input type="radio" name="financial4" value="No" checked={formData.financial4 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="financial4" value="3" checked={formData.financial4 === 3} onChange={handleChange} />
+                  <input type="radio" name="financial4" value="Not Sure" checked={formData.financial4 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -485,15 +605,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="financial5" value="1" checked={formData.financial5 === 1} onChange={handleChange} />
+                  <input type="radio" name="financial5" value="Yes" checked={formData.financial5 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="financial5" value="2" checked={formData.financial5 === 2} onChange={handleChange} />
+                  <input type="radio" name="financial5" value="No" checked={formData.financial5 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="financial5" value="3" checked={formData.financial5 === 3} onChange={handleChange} />
+                  <input type="radio" name="financial5" value="Not Sure" checked={formData.financial5 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -502,7 +622,7 @@ export default function InputForm() {
           </fieldset>
 
           <fieldset className="mb-6">
-            <legend>3. Supply Chain Management (SCM)</legend>
+            <legend>{sectionCounter++}. Supply Chain Management (SCM)</legend>
 
             <fieldset className="mb-6">
               <legend className="subLegend">Current Operations and Pain Points</legend>
@@ -536,15 +656,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="scm4" value="1" checked={formData.scm4 === 1} onChange={handleChange} />
+                  <input type="radio" name="scm4" value="Yes" checked={formData.scm4 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="scm4" value="2" checked={formData.scm4 === 2} onChange={handleChange} />
+                  <input type="radio" name="scm4" value="No" checked={formData.scm4 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="scm4" value="3" checked={formData.scm4 === 3} onChange={handleChange} />
+                  <input type="radio" name="scm4" value="Not Sure" checked={formData.scm4 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -556,15 +676,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="scm5" value="1" checked={formData.scm5 === 1} onChange={handleChange} />
+                  <input type="radio" name="scm5" value="Yes" checked={formData.scm5 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="scm5" value="2" checked={formData.scm5 === 2} onChange={handleChange} />
+                  <input type="radio" name="scm5" value="No" checked={formData.scm5 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="scm5" value="3" checked={formData.scm5 === 3} onChange={handleChange} />
+                  <input type="radio" name="scm5" value="Not Sure" checked={formData.scm5 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -574,7 +694,7 @@ export default function InputForm() {
           </fieldset>
 
           <fieldset className="mb-6">
-            <legend>4. Human Resources (HR)</legend>
+            <legend>{sectionCounter++}. Human Resources (HR)</legend>
 
             <fieldset className="mb-6">
               <legend className="subLegend">Current System Overview</legend>
@@ -598,15 +718,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="hr3" value="1" checked={formData.hr3 === 1} onChange={handleChange} />
+                  <input type="radio" name="hr3" value="Yes" checked={formData.hr3 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="hr3" value="2" checked={formData.hr3 === 2} onChange={handleChange} />
+                  <input type="radio" name="hr3" value="No" checked={formData.hr3 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="hr3" value="3" checked={formData.hr3 === 3} onChange={handleChange} />
+                  <input type="radio" name="hr3" value="Not Sure" checked={formData.hr3 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -621,15 +741,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="hr4" value="1" checked={formData.hr4 === 1} onChange={handleChange} />
+                  <input type="radio" name="hr4" value="Yes" checked={formData.hr4 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="hr4" value="2" checked={formData.hr4 === 2} onChange={handleChange} />
+                  <input type="radio" name="hr4" value="No" checked={formData.hr4 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="hr4" value="3" checked={formData.hr4 === 3} onChange={handleChange} />
+                  <input type="radio" name="hr4" value="Not Sure" checked={formData.hr4 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -641,15 +761,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="hr5" value="1" checked={formData.hr5 === 1} onChange={handleChange} />
+                  <input type="radio" name="hr5" value="Yes" checked={formData.hr5 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="hr5" value="2" checked={formData.hr5 === 2} onChange={handleChange} />
+                  <input type="radio" name="hr5" value="No" checked={formData.hr5 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="hr5" value="3" checked={formData.hr5 === 3} onChange={handleChange} />
+                  <input type="radio" name="hr5" value="Not Sure" checked={formData.hr5 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -658,7 +778,7 @@ export default function InputForm() {
           </fieldset>
 
           <fieldset className="mb-6">
-            <legend>5. Project Management</legend>
+            <legend>{sectionCounter++}. Project Management</legend>
 
             <fieldset className="mb-6">
               <legend className="subLegend">Existing Project Processes</legend>
@@ -675,15 +795,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="pm2" value="1" checked={formData.pm2 === 1} onChange={handleChange} />
+                  <input type="radio" name="pm2" value="Yes" checked={formData.pm2 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="pm2" value="2" checked={formData.pm2 === 2} onChange={handleChange} />
+                  <input type="radio" name="pm2" value="No" checked={formData.pm2 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="pm2" value="3" checked={formData.pm2 === 3} onChange={handleChange} />
+                  <input type="radio" name="pm2" value="Not Sure" checked={formData.pm2 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -698,15 +818,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="pm3" value="1" checked={formData.pm3 === 1} onChange={handleChange} />
+                  <input type="radio" name="pm3" value="Yes" checked={formData.pm3 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="pm3" value="2" checked={formData.pm3 === 2} onChange={handleChange} />
+                  <input type="radio" name="pm3" value="No" checked={formData.pm3 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="pm3" value="3" checked={formData.pm3 === 3} onChange={handleChange} />
+                  <input type="radio" name="pm3" value="Not Sure" checked={formData.pm3 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -718,15 +838,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="pm4" value="1" checked={formData.pm4 === 1} onChange={handleChange} />
+                  <input type="radio" name="pm4" value="Yes" checked={formData.pm4 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="pm4" value="2" checked={formData.pm4 === 2} onChange={handleChange} />
+                  <input type="radio" name="pm4" value="No" checked={formData.pm4 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="pm4" value="3" checked={formData.pm4 === 3} onChange={handleChange} />
+                  <input type="radio" name="pm4" value="Not Sure" checked={formData.pm4 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -735,7 +855,7 @@ export default function InputForm() {
           </fieldset>
 
           <fieldset className="mb-6">
-            <legend>6. Real Estate Management</legend>
+            <legend>{sectionCounter++}. Real Estate Management</legend>
 
             <fieldset className="mb-6">
               <legend className="subLegend">Current Management of Real Estate Assets</legend>
@@ -745,15 +865,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="rem1" value="1" checked={formData.rem1 === 1} onChange={handleChange} />
+                  <input type="radio" name="rem1" value="Yes" checked={formData.rem1 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="rem1" value="2" checked={formData.rem1 === 2} onChange={handleChange} />
+                  <input type="radio" name="rem1" value="No" checked={formData.rem1 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="rem1" value="3" checked={formData.rem1 === 3} onChange={handleChange} />
+                  <input type="radio" name="rem1" value="Not Sure" checked={formData.rem1 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -765,15 +885,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="rem2" value="1" checked={formData.rem2 === 1} onChange={handleChange} />
+                  <input type="radio" name="rem2" value="Yes" checked={formData.rem2 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="rem2" value="2" checked={formData.rem2 === 2} onChange={handleChange} />
+                  <input type="radio" name="rem2" value="No" checked={formData.rem2 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="rem2" value="3" checked={formData.rem2 === 3} onChange={handleChange} />
+                  <input type="radio" name="rem2" value="Not Sure" checked={formData.rem2 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -788,15 +908,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="rem3" value="1" checked={formData.rem3 === 1} onChange={handleChange} />
+                  <input type="radio" name="rem3" value="Yes" checked={formData.rem3 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="rem3" value="2" checked={formData.rem3 === 2} onChange={handleChange} />
+                  <input type="radio" name="rem3" value="No" checked={formData.rem3 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="rem3" value="3" checked={formData.rem3 === 3} onChange={handleChange} />
+                  <input type="radio" name="rem3" value="Not Sure" checked={formData.rem3 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -808,15 +928,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="rem4" value="1" checked={formData.rem4 === 1} onChange={handleChange} />
+                  <input type="radio" name="rem4" value="Yes" checked={formData.rem4 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="rem4" value="2" checked={formData.rem4 === 2} onChange={handleChange} />
+                  <input type="radio" name="rem4" value="No" checked={formData.rem4 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="rem4" value="3" checked={formData.rem4 === 3} onChange={handleChange} />
+                  <input type="radio" name="rem4" value="Not Sure" checked={formData.rem4 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -825,7 +945,7 @@ export default function InputForm() {
           </fieldset>
 
           <fieldset className="mb-6">
-            <legend>7. System Integration and Data Management</legend>
+            <legend>{sectionCounter++}. System Integration and Data Management</legend>
 
             <fieldset className="mb-6">
               <legend className="subLegend">Existing Data Sources and Systems</legend>
@@ -842,15 +962,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="sidm2" value="1" checked={formData.sidm2 === 1} onChange={handleChange} />
+                  <input type="radio" name="sidm2" value="Yes" checked={formData.sidm2 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="sidm2" value="2" checked={formData.sidm2 === 2} onChange={handleChange} />
+                  <input type="radio" name="sidm2" value="No" checked={formData.sidm2 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="sidm2" value="3" checked={formData.sidm2 === 3} onChange={handleChange} />
+                  <input type="radio" name="sidm2" value="Not Sure" checked={formData.sidm2 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -875,7 +995,7 @@ export default function InputForm() {
           </fieldset>
 
           <fieldset className="mb-6">
-            <legend>8. Compliance and Security</legend>
+            <legend>{sectionCounter++}. Compliance and Security</legend>
 
             <fieldset className="mb-6">
               <legend className="subLegend">Regulatory Requirements</legend>
@@ -885,15 +1005,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="security1" value="1" checked={formData.security1 === 1} onChange={handleChange} />
+                  <input type="radio" name="security1" value="Yes" checked={formData.security1 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="security1" value="2" checked={formData.security1 === 2} onChange={handleChange} />
+                  <input type="radio" name="security1" value="No" checked={formData.security1 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="security1" value="3" checked={formData.security1 === 3} onChange={handleChange} />
+                  <input type="radio" name="security1" value="Not Sure" checked={formData.security1 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -908,15 +1028,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="security2" value="1" checked={formData.security2 === 1} onChange={handleChange} />
+                  <input type="radio" name="security2" value="Yes" checked={formData.security2 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="security2" value="2" checked={formData.security2 === 2} onChange={handleChange} />
+                  <input type="radio" name="security2" value="No" checked={formData.security2 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="security2" value="3" checked={formData.security2 === 3} onChange={handleChange} />
+                  <input type="radio" name="security2" value="Not Sure" checked={formData.security2 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -925,7 +1045,7 @@ export default function InputForm() {
           </fieldset>
 
           <fieldset className="mb-6">
-            <legend>9. Reporting and Analytics</legend>
+            <legend>{sectionCounter++}. Reporting and Analytics</legend>
 
             <fieldset className="mb-6">
               <legend className="subLegend">Current Reporting Processes</legend>
@@ -945,15 +1065,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="report2" value="1" checked={formData.report2 === 1} onChange={handleChange} />
+                  <input type="radio" name="report2" value="Yes" checked={formData.report2 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="report2" value="2" checked={formData.report2 === 2} onChange={handleChange} />
+                  <input type="radio" name="report2" value="No" checked={formData.report2 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="report2" value="3" checked={formData.report2 === 3} onChange={handleChange} />
+                  <input type="radio" name="report2" value="Not Sure" checked={formData.report2 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -965,15 +1085,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="report3" value="1" checked={formData.report3 === 1} onChange={handleChange} />
+                  <input type="radio" name="report3" value="Yes" checked={formData.report3 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="report3" value="2" checked={formData.report3 === 2} onChange={handleChange} />
+                  <input type="radio" name="report3" value="No" checked={formData.report3 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="report3" value="3" checked={formData.report3 === 3} onChange={handleChange} />
+                  <input type="radio" name="report3" value="Not Sure" checked={formData.report3 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -982,7 +1102,7 @@ export default function InputForm() {
           </fieldset>
 
           <fieldset className="mb-6">
-            <legend>10. Change Management and Training Needs</legend>
+            <legend>{sectionCounter++}. Change Management and Training Needs</legend>
 
             <fieldset className="mb-6">
               <legend className="subLegend">Employee Readiness</legend>
@@ -999,15 +1119,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="training2" value="1" checked={formData.training2 === 1} onChange={handleChange} />
+                  <input type="radio" name="training2" value="Yes" checked={formData.training2 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="training2" value="2" checked={formData.training2 === 2} onChange={handleChange} />
+                  <input type="radio" name="training2" value="No" checked={formData.training2 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="training2" value="3" checked={formData.training2 === 3} onChange={handleChange} />
+                  <input type="radio" name="training2" value="Not Sure" checked={formData.training2 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
@@ -1029,15 +1149,15 @@ export default function InputForm() {
               </label>
               <div className="flex">
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="training4" value="1" checked={formData.training4 === 1} onChange={handleChange} />
+                  <input type="radio" name="training4" value="Yes" checked={formData.training4 === "Yes"} onChange={handleChange} />
                   <label className="ml-2">Yes</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="training4" value="2" checked={formData.training4 === 2} onChange={handleChange} />
+                  <input type="radio" name="training4" value="No" checked={formData.training4 === "No"} onChange={handleChange} />
                   <label className="ml-2">No</label>
                 </div>
                 <div className="flex items-center mr-4">
-                  <input type="radio" name="training4" value="3" checked={formData.training4 === 3} onChange={handleChange} />
+                  <input type="radio" name="training4" value="Not Sure" checked={formData.training4 === "Not Sure"} onChange={handleChange} />
                   <label className="ml-2">Not Sure</label>
                 </div>
               </div>
