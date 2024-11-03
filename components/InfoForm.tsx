@@ -342,10 +342,10 @@ export default function InputForm() {
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-50">
-      <Image alt="logo" src="/netcompany-intrasoft-logo.png" width={200} height={200} className="mb-4" />
-      <h1 className="text-2xl font-bold text-primary mb-6">ERP Discovery Questionnaire</h1>
+      <Image alt="logo" src="/netcompany-intrasoft-logo.png" width={200} height={200} className="m-4" />
+      <h1 className="text-2xl font-bold text-primary m-4">ERP Discovery Questionnaire</h1>
 
-      <div className="p-8 max-w-3xl w-full">
+      <div className="px-8 py-4 max-w-3xl w-full">
         <h3 className="font-bold text-primary">This questionnaire is conducted with the utmost confidentiality, and all responses will be kept strictly confidential.</h3>
       </div>
 
