@@ -60,6 +60,40 @@ type Inputs = {
   erp2: string;
   erp2Input: string;
   erp3: string;
+  financials1: boolean;
+  financials2: boolean;
+  financials3: boolean;
+  financials4: boolean;
+  financials5: boolean;
+  financials6: boolean;
+  procurement1: boolean;
+  procurement2: boolean;
+  procurement3: boolean;
+  procurement4: boolean;
+  procurement5: boolean;
+  hcm1: boolean;
+  hcm2: boolean;
+  manufacturing1: boolean;
+  manufacturing2: boolean;
+  retail1: boolean;
+  retail2: boolean;
+  needs1: string;
+  needs2: string;
+  needs3: string;
+  needs4: string;
+  needs5: string;
+  needs5Input: string;
+  needs6: string;
+  needs7: string;
+  needs7Input: string;
+  needs8: string;
+  needs8Input: string;
+  structure1: string;
+  structure2: string;
+  structure3: string;
+  structure4: string;
+  structure5: string;
+  other: string;
 };
 
 export default function InputForm() {
@@ -116,6 +150,40 @@ export default function InputForm() {
     erp2: "",
     erp2Input: "",
     erp3: "",
+    financials1: false,
+    financials2: false,
+    financials3: false,
+    financials4: false,
+    financials5: false,
+    financials6: false,
+    procurement1: false,
+    procurement2: false,
+    procurement3: false,
+    procurement4: false,
+    procurement5: false,
+    hcm1: false,
+    hcm2: false,
+    manufacturing1: false,
+    manufacturing2: false,
+    retail1: false,
+    retail2: false,
+    needs1: "",
+    needs2: "",
+    needs3: "",
+    needs4: "",
+    needs5: "",
+    needs5Input: "",
+    needs6: "",
+    needs7: "",
+    needs7Input: "",
+    needs8: "",
+    needs8Input: "",
+    structure1: "",
+    structure2: "",
+    structure3: "",
+    structure4: "",
+    structure5: "",
+    other: "",
   });
 
   const [errors, setErrors] = useState<Partial<Inputs>>({});
@@ -204,7 +272,13 @@ export default function InputForm() {
       security1, security2,
       report1, report2, report3,
       training1, training2, training3, training4,
-      erp1, erp1Input, erp1Select, erp2, erp2Input, erp3
+      erp1, erp1Input, erp1Select, erp2, erp2Input, erp3,
+      financials1, financials2, financials3, financials4, financials5, financials6,
+      procurement1, procurement2, procurement3, procurement4, procurement5,
+      hcm1, hcm2, manufacturing1, manufacturing2, retail1, retail2,
+      needs1, needs2, needs3, needs4, needs5, needs5Input, needs6, needs7, needs7Input, needs8, needs8Input,
+      structure1, structure2, structure3, structure4, structure5,
+      other
     } = formData;
 
     const { data: insertData, error: insertError } = await supabase
@@ -233,7 +307,13 @@ export default function InputForm() {
         security1, security2,
         report1, report2, report3,
         training1, training2, training3, training4,
-        erp1, erp1_input: erp1Input, erp1_select: erp1Select, erp2, erp2_input: erp2Input, erp3
+        erp1, erp1_input: erp1Input, erp1_select: erp1Select, erp2, erp2_input: erp2Input, erp3,
+        financials1, financials2, financials3, financials4, financials5, financials6,
+        procurement1, procurement2, procurement3, procurement4, procurement5,
+        hcm1, hcm2, manufacturing1, manufacturing2, retail1, retail2,
+        needs1, needs2, needs3, needs4, needs5, needs5_input: needs5Input, needs6, needs7, needs7_input: needs7Input, needs8, needs8_input: needs8Input,
+        structure1, structure2, structure3, structure4, structure5,
+        other
       });
 
     if (insertError) {
@@ -301,26 +381,49 @@ export default function InputForm() {
       erp2: "",
       erp2Input: "",
       erp3: "",
+      financials1: false,
+      financials2: false,
+      financials3: false,
+      financials4: false,
+      financials5: false,
+      financials6: false,
+      procurement1: false,
+      procurement2: false,
+      procurement3: false,
+      procurement4: false,
+      procurement5: false,
+      hcm1: false,
+      hcm2: false,
+      manufacturing1: false,
+      manufacturing2: false,
+      retail1: false,
+      retail2: false,
+      needs1: "",
+      needs2: "",
+      needs3: "",
+      needs4: "",
+      needs5: "",
+      needs5Input: "",
+      needs6: "",
+      needs7: "",
+      needs7Input: "",
+      needs8: "",
+      needs8Input: "",
+      structure1: "",
+      structure2: "",
+      structure3: "",
+      structure4: "",
+      structure5: "",
+      other: "",
     });
     setErrors({});
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type, checked } = e.target as HTMLInputElement; // Type assertion to handle 'checked'
     setFormData((prevData) => ({
       ...prevData,
-      [name]: name === "general1" || name === "general2" || name === "general3"
-        || name === "financial4" || name === "financial5"
-        || name === "scm4" || name === "scm5"
-        || name === "hr3" || name === "hr4" || name === "hr5"
-        || name === "pm2" || name === "pm3" || name === "pm4"
-        || name === "rem1" || name === "rem2" || name === "rem3" || name === "rem4"
-        || name === "sidm2"
-        || name === "security1" || name === "security2"
-        || name === "report2" || name === "report3"
-        || name === "training2" || name === "training4"
-        || name === "erp1" || name === "erp2"
-        ? String(value) : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -459,6 +562,404 @@ export default function InputForm() {
               <option value="Hybrid">Hybrid</option>
               <option value="Not Sure">Not Sure</option>
             </select>
+          </fieldset>
+
+          <fieldset className="mb-6">
+            <legend>{sectionCounter++}. ERP Modules</legend>
+
+            <fieldset className="mb-6">
+              <legend className="subLegend">Financials</legend>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="financials1"
+                  name="financials1"
+                  type="checkbox"
+                  checked={formData.financials1}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="financials1" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">General Ledger (GL)</label>
+              </div>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="financials2"
+                  name="financials2"
+                  type="checkbox"
+                  checked={formData.financials2}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="financials2" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Accounts Payable (AP)</label>
+              </div>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="financials3"
+                  name="financials3"
+                  type="checkbox"
+                  checked={formData.financials3}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="financials3" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Accounts Receivable (AR)</label>
+              </div>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="financials4"
+                  name="financials4"
+                  type="checkbox"
+                  checked={formData.financials4}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="financials4" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Cash and Bank Management (CE)</label>
+              </div>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="financials5"
+                  name="financials5"
+                  type="checkbox"
+                  checked={formData.financials5}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="financials5" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Fixed Assets (FA)</label>
+              </div>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="financials6"
+                  name="financials6"
+                  type="checkbox"
+                  checked={formData.financials6}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="financials6" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Treasury and Risk Management (TRM)</label>
+              </div>
+
+            </fieldset>
+
+            <fieldset className="mb-6">
+              <legend className="subLegend">Procurement</legend>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="procurement1"
+                  name="procurement1"
+                  type="checkbox"
+                  checked={formData.procurement1}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="procurement1" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Procure-to-Pay (P2P)</label>
+              </div>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="procurement2"
+                  name="procurement2"
+                  type="checkbox"
+                  checked={formData.procurement2}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="procurement2" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Supplier Management</label>
+              </div>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="procurement3"
+                  name="procurement3"
+                  type="checkbox"
+                  checked={formData.procurement3}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="procurement3" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Contract Management</label>
+              </div>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="procurement4"
+                  name="procurement4"
+                  type="checkbox"
+                  checked={formData.procurement4}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="procurement4" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Purchase Orders (PO)</label>
+              </div>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="procurement5"
+                  name="procurement5"
+                  type="checkbox"
+                  checked={formData.procurement5}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="procurement5" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Inventory Management</label>
+              </div>
+
+            </fieldset>
+
+            <fieldset className="mb-6">
+              <legend className="subLegend">Human Capital Management</legend>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="hcm1"
+                  name="hcm1"
+                  type="checkbox"
+                  checked={formData.hcm1}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="hcm1" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Hire-to-Retire</label>
+              </div>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="hcm2"
+                  name="hcm2"
+                  type="checkbox"
+                  checked={formData.hcm2}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="hcm2" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Talent Management</label>
+              </div>
+
+            </fieldset>
+
+            <fieldset className="mb-6">
+              <legend className="subLegend">Manufacturing</legend>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="manufacturing1"
+                  name="manufacturing1"
+                  type="checkbox"
+                  checked={formData.manufacturing1}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="manufacturing1" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Production Planning</label>
+              </div>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="manufacturing2"
+                  name="manufacturing2"
+                  type="checkbox"
+                  checked={formData.manufacturing2}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="manufacturing2" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Quality Management</label>
+              </div>
+
+            </fieldset>
+
+            <fieldset className="mb-6">
+              <legend className="subLegend">Retail</legend>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="retail1"
+                  name="retail1"
+                  type="checkbox"
+                  checked={formData.retail1}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="retail1" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Retail Management</label>
+              </div>
+
+              <div className="flex items-center mb-1">
+                <input
+                  id="retail2"
+                  name="retail2"
+                  type="checkbox"
+                  checked={formData.retail2}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="retail2" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Point of Sale (POS)</label>
+              </div>
+
+            </fieldset>
+
+          </fieldset>
+
+          <fieldset className="mb-6">
+            <legend>{sectionCounter++}. ERP Implementation Needs and Expectations</legend>
+
+            <label htmlFor="needs1" className="block mt-4 mb-2">
+              - What is your budget range for the ERP implementation?
+            </label>
+            <input type="text" name="needs1" id="needs1" className="w-full p-2 border rounded" placeholder="(e.g., $50,000 - $100,000)" value={formData.needs1} onChange={handleChange} />
+
+            <hr className="mt-5 mb-5" />
+
+            <label htmlFor="needs2" className="block mt-4 mb-2">
+              - What is your expected timeline for the ERP implementation?
+            </label>
+            <input type="text" name="needs2" id="needs2" className="w-full p-2 border rounded" placeholder="(e.g., 3-6 months)" value={formData.needs2} onChange={handleChange} />
+
+            <hr className="mt-5 mb-5" />
+
+            <label htmlFor="needs3" className="block mt-4 mb-2">
+              - What key challenges are you currently facing that you expect the ERP to address?
+            </label>
+            <input type="text" name="needs3" id="needs3" className="w-full p-2 border rounded" value={formData.needs3} onChange={handleChange} />
+
+            <hr className="mt-5 mb-5" />
+
+            <label htmlFor="needs4" className="block mt-4 mb-2">
+              - What are your expectations regarding training and support?
+            </label>
+            <input type="text" name="needs4" id="needs4" className="w-full p-2 border rounded" value={formData.needs4} onChange={handleChange} />
+
+            <hr className="mt-5 mb-5" />
+
+            <label className="block mt-4 mb-2">
+              - Do you require any custom features or workflows?
+            </label>
+            <div className="flex">
+              <div className="flex items-center mr-4">
+                <input type="radio" name="needs5" value="Yes" checked={formData.needs5 === "Yes"} onChange={handleChange} />
+                <label className="ml-2">Yes</label>
+              </div>
+              <div className="flex items-center mr-4">
+                <input type="radio" name="needs5" value="No" checked={formData.needs5 === "No"} onChange={handleChange} />
+                <label className="ml-2">No</label>
+              </div>
+              <div className="flex items-center mr-4">
+                <input type="radio" name="needs5" value="Not Sure" checked={formData.needs5 === "Not Sure"} onChange={handleChange} />
+                <label className="ml-2">Not Sure</label>
+              </div>
+            </div>
+
+            <label htmlFor="needs5Input" className="block mt-2 mb-2">
+              If yes, please specify:
+            </label>
+            <input type="text" name="needs5Input" id="needs5Input" className="w-full p-2 border rounded" value={formData.needs5Input} onChange={handleChange} />
+
+            <hr className="mt-5 mb-5" />
+
+            <label className="block mt-4 mb-2">
+              - Will you require data migration from an existing system?
+            </label>
+            <div className="flex">
+              <div className="flex items-center mr-4">
+                <input type="radio" name="needs6" value="Yes" checked={formData.needs6 === "Yes"} onChange={handleChange} />
+                <label className="ml-2">Yes</label>
+              </div>
+              <div className="flex items-center mr-4">
+                <input type="radio" name="needs6" value="No" checked={formData.needs6 === "No"} onChange={handleChange} />
+                <label className="ml-2">No</label>
+              </div>
+              <div className="flex items-center mr-4">
+                <input type="radio" name="needs6" value="Not Sure" checked={formData.needs6 === "Not Sure"} onChange={handleChange} />
+                <label className="ml-2">Not Sure</label>
+              </div>
+            </div>
+
+            <hr className="mt-5 mb-5" />
+
+            <label className="block mt-4 mb-2">
+              - Are there any compliance standards your ERP needs to meet?
+            </label>
+            <div className="flex">
+              <div className="flex items-center mr-4">
+                <input type="radio" name="needs7" value="Yes" checked={formData.needs7 === "Yes"} onChange={handleChange} />
+                <label className="ml-2">Yes</label>
+              </div>
+              <div className="flex items-center mr-4">
+                <input type="radio" name="needs7" value="No" checked={formData.needs7 === "No"} onChange={handleChange} />
+                <label className="ml-2">No</label>
+              </div>
+              <div className="flex items-center mr-4">
+                <input type="radio" name="needs7" value="Not Sure" checked={formData.needs7 === "Not Sure"} onChange={handleChange} />
+                <label className="ml-2">Not Sure</label>
+              </div>
+            </div>
+
+            <label htmlFor="needs7Input" className="block mt-2 mb-2">
+              If yes, please specify:
+            </label>
+            <input type="text" name="needs7Input" id="needs7Input" className="w-full p-2 border rounded" placeholder="(e.g., GDPR, HIPAA)" value={formData.needs7Input} onChange={handleChange} />
+
+            <hr className="mt-5 mb-5" />
+
+            <label className="block mt-4 mb-2">
+              - Do you need integration with other systems?
+            </label>
+            <div className="flex">
+              <div className="flex items-center mr-4">
+                <input type="radio" name="needs8" value="Yes" checked={formData.needs8 === "Yes"} onChange={handleChange} />
+                <label className="ml-2">Yes</label>
+              </div>
+              <div className="flex items-center mr-4">
+                <input type="radio" name="needs8" value="No" checked={formData.needs8 === "No"} onChange={handleChange} />
+                <label className="ml-2">No</label>
+              </div>
+              <div className="flex items-center mr-4">
+                <input type="radio" name="needs8" value="Not Sure" checked={formData.needs8 === "Not Sure"} onChange={handleChange} />
+                <label className="ml-2">Not Sure</label>
+              </div>
+            </div>
+
+            <label htmlFor="needs8Input" className="block mt-2 mb-2">
+              If yes, please specify:
+            </label>
+            <input type="text" name="needs8Input" id="needs8Input" className="w-full p-2 border rounded" placeholder="(e.g., CRM, legacy systems, etc.)" value={formData.needs8Input} onChange={handleChange} />
+
+          </fieldset>
+
+          <fieldset className="mb-6">
+            <legend>{sectionCounter++}. Company Structure Information</legend>
+
+            <label htmlFor="structure1" className="block mt-4 mb-2">
+              - How many legal entities does your organization operate?
+            </label>
+            <input type="text" name="structure1" id="structure1" className="w-full p-2 border rounded" value={formData.structure1} onChange={handleChange} />
+
+            <hr className="mt-5 mb-5" />
+
+            <label htmlFor="structure2" className="block mt-4 mb-2">
+              - In which countries does your organization operate?
+            </label>
+            <input type="text" name="structure2" id="structure2" className="w-full p-2 border rounded" value={formData.structure2} onChange={handleChange} />
+
+            <hr className="mt-5 mb-5" />
+
+            <label htmlFor="structure3" className="block mt-4 mb-2">
+              - How many locations does your organization have?
+            </label>
+            <input type="text" name="structure3" id="structure3" className="w-full p-2 border rounded" value={formData.structure3} onChange={handleChange} />
+
+            <hr className="mt-5 mb-5" />
+
+            <label htmlFor="structure4" className="block mt-4 mb-2">
+              - What is the total number of employees in your organization?
+            </label>
+            <input type="text" name="structure4" id="structure4" className="w-full p-2 border rounded" value={formData.structure4} onChange={handleChange} />
+
+            <hr className="mt-5 mb-5" />
+
+            <label htmlFor="structure5" className="block mt-4 mb-2">
+              - How many bank accounts does your organization maintain?
+            </label>
+            <input type="text" name="structure5" id="structure5" className="w-full p-2 border rounded" value={formData.structure5} onChange={handleChange} />
+
           </fieldset>
 
           <fieldset className="mb-6">
@@ -1163,6 +1664,17 @@ export default function InputForm() {
               </div>
 
             </fieldset>
+          </fieldset>
+
+          <fieldset className="mb-6">
+            <legend>{sectionCounter++}. Additional Comments or Requirements</legend>
+
+
+            <label htmlFor="other" className="block mt-4 mb-2">
+              - Are there any additional details or specific requirements you would like to share?
+            </label>
+            <textarea name="other" id="other" className="w-full p-2 border rounded" value={formData.other} onChange={handleChange} />
+
           </fieldset>
 
           {/* Submit Button */}
