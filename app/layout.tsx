@@ -7,8 +7,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Netcompany Intrasoft Customers Information",
-  description: "Netcompany Intrasoft Customers Information Collection",
+  title: "Netcompany-Intrasoft ERP Discovery Questionnaire",
+  description: "Netcompany-Intrasoft ERP Discovery Questionnaire",
 };
 
 export default function RootLayout({
