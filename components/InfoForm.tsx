@@ -313,7 +313,20 @@ export default function DynamicForm() {
         <form className="bg-white shadow-lg p-8 rounded-lg max-w-3xl w-full" onSubmit={handleSubmit} encType="multipart/form-data">
 
           {/* Customer Information */}
-       
+          <fieldset className="mb-6">
+            <legend>Customer Information</legend>
+           
+            <label className="block mb-4">Contact Name:
+              <input type="text" name="contactName" className="w-full mt-2 p-2 border rounded" value={formData.contactName || ""} onChange={handleChange} required />
+            </label>
+            <label className="block mb-4">Job Title:
+              <input type="email" name="contactEmail" className="w-full mt-2 p-2 border rounded" value={formData.contactEmail || ""} onChange={handleChange} required />
+            </label>
+            <label className="block mb-4">Job Scope (i.e., Vehicles, Spares, Service, Other OEM (Zeekr, Smart, Chery)):
+              <input type="tel" name="contactNumber" className="w-full mt-2 p-2 border rounded" value={formData.contactNumber || ""} onChange={handleChange} required />
+             </label>
+          </fieldset>
+
 
           {/* Dynamic Questions */}
           {loading ? (
