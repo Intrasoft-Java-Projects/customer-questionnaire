@@ -32,10 +32,20 @@ export default function DynamicForm() {
       const { data, error } = await supabase.from("questions").select("*").eq("status", true).order("id");
       if (error) console.error("Error fetching questions:", error.message);
       setQuestions(data || []);
+  
+      // Initialize all sections as collapsed
+      const initialCollapsedState: Record<string, boolean> = {};
+      data?.forEach((q) => {
+        if (q.section) initialCollapsedState[q.section] = true;
+        if (q.subsection) initialCollapsedState[`${q.section}-${q.subsection}`] = true;
+      });
+  
+      setCollapsedSections(initialCollapsedState);
       setLoading(false);
     };
     fetchQuestions();
   }, []);
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const target = e.target;
