@@ -85,11 +85,11 @@ export default function DynamicForm() {
         throw checkError;
       }
 
-      if (existingOrganization) {
-        alert("This contact email already exists. Please use a different email or update the existing entry.");
-        setLoading(false);
-        return;
-      }
+      // if (existingOrganization) {
+      //   alert("This contact email already exists. Please use a different email or update the existing entry.");
+      //   setLoading(false);
+      //   return;
+      // }
 
       const { data: orgData, error: orgError } = await supabase
         .from("organizations")
