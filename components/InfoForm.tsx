@@ -59,16 +59,16 @@ export default function DynamicForm() {
 
     try {
       const customerData = {
-        companyName: formData.companyName,
         contactName: formData.contactName,
-        contactEmail: formData.contactEmail,
-        contactNumber: formData.contactNumber,
+        jobScope: formData.jobScope,
+        jobTitle: formData.jobTitle,
+        // contactNumber: formData.contactNumber,
       };
 
       const { data: existingOrganization, error: checkError } = await supabase
         .from("organizations")
         .select("*")
-        .eq("contactEmail", customerData.contactEmail)
+        .eq("contactName", customerData.contactName)
         .single();
 
       if (checkError && checkError.code !== "PGRST116") {
@@ -311,7 +311,6 @@ export default function DynamicForm() {
         <h1 className="text-2xl text-green-600 mb-4 font-semibold">Thank you for submitting!</h1>
       ) : (
         <form className="bg-white shadow-lg p-8 rounded-lg max-w-3xl w-full" onSubmit={handleSubmit} encType="multipart/form-data">
-
           {/* Customer Information */}
           <fieldset className="mb-6">
             <legend>Customer Information</legend>
@@ -320,13 +319,12 @@ export default function DynamicForm() {
               <input type="text" name="contactName" className="w-full mt-2 p-2 border rounded" value={formData.contactName || ""} onChange={handleChange} required />
             </label>
             <label className="block mb-4">Job Title:
-              <input type="email" name="contactEmail" className="w-full mt-2 p-2 border rounded" value={formData.contactEmail || ""} onChange={handleChange} required />
+              <input type="text" name="jobTitle" className="w-full mt-2 p-2 border rounded" value={formData.jobTitle || ""} onChange={handleChange} required />
             </label>
             <label className="block mb-4">Job Scope (i.e., Vehicles, Spares, Service, Other OEM (Zeekr, Smart, Chery)):
-              <input type="tel" name="contactNumber" className="w-full mt-2 p-2 border rounded" value={formData.contactNumber || ""} onChange={handleChange} required />
+              <input type="tel" name="jobScope" className="w-full mt-2 p-2 border rounded" value={formData.jobScope || ""} onChange={handleChange} required />
              </label>
           </fieldset>
-
 
           {/* Dynamic Questions */}
           {loading ? (
