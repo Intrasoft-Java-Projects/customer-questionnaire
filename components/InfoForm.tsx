@@ -166,6 +166,7 @@ export default function DynamicForm() {
                 {option.label}
               </label>
             ))}
+
             {/* Render sub-questions conditionally */}
             {questions
               .filter(
@@ -229,6 +230,19 @@ export default function DynamicForm() {
               type="file"
               name={String(id)}
               onChange={(e) => handleFileChange(e, id)}
+              className="w-full mt-2 p-2 border rounded"
+            />
+          </label>
+        );
+
+      case "textarea":
+        return (
+          <label key={id} className="block mb-4">
+            {label}
+            <textarea
+              name={String(id)}
+              value={formData[id] || ""}
+              onChange={handleChange}
               className="w-full mt-2 p-2 border rounded"
             />
           </label>
@@ -301,19 +315,18 @@ export default function DynamicForm() {
           {/* Customer Information */}
           <fieldset className="mb-6">
             <legend>Customer Information</legend>
-            <label className="block mb-4">Company Name:
-              <input type="text" name="companyName" className="w-full mt-2 p-2 border rounded" value={formData.companyName || ""} onChange={handleChange} required />
-            </label>
+           
             <label className="block mb-4">Contact Name:
               <input type="text" name="contactName" className="w-full mt-2 p-2 border rounded" value={formData.contactName || ""} onChange={handleChange} required />
             </label>
-            <label className="block mb-4">Contact Email:
+            <label className="block mb-4">Job Title:
               <input type="email" name="contactEmail" className="w-full mt-2 p-2 border rounded" value={formData.contactEmail || ""} onChange={handleChange} required />
             </label>
-            <label className="block mb-4">Contact Number:
+            <label className="block mb-4">Job Scope (i.e., Vehicles, Spares, Service, Other OEM (Zeekr, Smart, Chery)):
               <input type="tel" name="contactNumber" className="w-full mt-2 p-2 border rounded" value={formData.contactNumber || ""} onChange={handleChange} required />
-            </label>
+             </label>
           </fieldset>
+
 
           {/* Dynamic Questions */}
           {loading ? (
