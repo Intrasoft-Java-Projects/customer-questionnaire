@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import Image from "next/image";
-import { useParams } from "next/navigation"; // Import useParams for App Router
+import { useSearchParams } from "next/navigation"; 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { data } from "autoprefixer";
 
@@ -23,8 +23,8 @@ type Question = {
 };
 
 export default function DynamicForm() {
-  const params = useParams(); // Get form ID from the URL
-  const formId = Number(params?.id); // Convert to a number
+  const searchParams = useSearchParams();
+  const formId = Number(searchParams.get("formId")); // Read formId from query string
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [formData, setFormData] = useState<Record<string, any>>({});
@@ -68,13 +68,14 @@ export default function DynamicForm() {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const target = e.target;
+    const target = e.target; // Save reference to target
     const { name, value, type } = target;
-
-    if (type === "checkbox") {
+  
+    if (target instanceof HTMLInputElement && type === "checkbox") {
+      // ✅ Now TypeScript knows it's a checkbox
       setFormData((prevData) => ({
         ...prevData,
-        [name]: target.checked,
+        [name]: target.checked, // No more TypeScript error
       }));
     } else {
       setFormData((prevData) => ({
@@ -83,6 +84,7 @@ export default function DynamicForm() {
       }));
     }
   };
+  
 
   useEffect(() => {
     console.log("Updated formData:", formData);
@@ -110,7 +112,7 @@ export default function DynamicForm() {
         throw checkError;
       }
 
-      let organization_id;
+      let organization_id: number | null = null; // ✅ Explicit type
 
       if (existingOrganization) {
         // Update the existing record
@@ -118,10 +120,10 @@ export default function DynamicForm() {
           .from("organizations")
           .update(customerData)
           .eq("contactEmail", customerData.contactEmail);
-
+      
         if (updateError) throw updateError;
-
-        organization_id = existingOrganization.id;
+      
+        organization_id = existingOrganization.id; // ✅ TypeScript now recognizes organization_id as a number
       } else {
         // Insert new organization
         const { data: orgData, error: orgError } = await supabase
@@ -129,11 +131,11 @@ export default function DynamicForm() {
           .insert([customerData])
           .select("*")
           .single();
-
+      
         if (orgError) throw orgError;
-
-        organization_id = orgData.id;
-      }
+      
+        organization_id = orgData.id; // ✅ No TypeScript error anymore
+      }      
 
       // Prepare responses
       const responsePayload = await Promise.all(
@@ -168,7 +170,7 @@ export default function DynamicForm() {
       // Upsert responses (insert or update)
       const { error: responseError } = await supabase
       .from("responses")
-      .upsert(responsePayload, { onConflict: ["organization_id", "question_id"] }); // Ensure these columns have a unique constraint
+      .upsert(responsePayload, { onConflict: "organization_id,question_id" }); // ✅ Correct (string)
     
     if (responseError) throw responseError;
 
@@ -373,10 +375,10 @@ export default function DynamicForm() {
       );
 
       const { error } = await supabase
-        .from("progress")
-        .upsert(savePayload, {
-          onConflict: ["form_id", "contactEmail", "question_id"],
-        });
+      .from("progress")
+      .upsert(savePayload, {
+        onConflict: "form_id,contactEmail,question_id", // ✅ Correct format
+      });    
 
       if (error) throw error;
 
