@@ -68,13 +68,12 @@ export default function DynamicForm() {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const target = e.target;
-    const { name, value, type } = target;
-
-    if (type === "checkbox") {
+    const { name, value, type } = e.target;
+  
+    if (e.target instanceof HTMLInputElement && type === "checkbox") {
       setFormData((prevData) => ({
         ...prevData,
-        [name]: target.checked,
+        [name]: e.target.checked, // ✅ Safe because it's definitely a checkbox
       }));
     } else {
       setFormData((prevData) => ({
@@ -82,7 +81,7 @@ export default function DynamicForm() {
         [name]: value,
       }));
     }
-  };
+  };  
 
   useEffect(() => {
     console.log("Updated formData:", formData);
