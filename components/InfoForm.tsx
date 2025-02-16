@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import Image from "next/image";
-import { useParams } from "next/navigation"; // Import useParams for App Router
+import { useSearchParams } from "next/navigation"; 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { data } from "autoprefixer";
 
@@ -23,8 +23,8 @@ type Question = {
 };
 
 export default function DynamicForm() {
-  const params = useParams(); // Get form ID from the URL
-  const formId = Number(params?.id); // Convert to a number
+  const searchParams = useSearchParams();
+  const formId = Number(searchParams.get("formId")); // Read formId from query string
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [formData, setFormData] = useState<Record<string, any>>({});
