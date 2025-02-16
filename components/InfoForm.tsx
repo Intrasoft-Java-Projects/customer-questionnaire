@@ -72,24 +72,24 @@ export default function DynamicForm() {
         contactName: formData.contactName,
         jobScope: formData.jobScope,
         jobTitle: formData.jobTitle,
-        // contactNumber: formData.contactNumber,
+        contactEmail: formData.contactEmail,
       };
 
       const { data: existingOrganization, error: checkError } = await supabase
         .from("organizations")
         .select("*")
-        .eq("contactName", customerData.contactName)
+        .eq("contactEmail", customerData.contactEmail)
         .single();
 
       if (checkError && checkError.code !== "PGRST116") {
         throw checkError;
       }
 
-      // if (existingOrganization) {
-      //   alert("This contact email already exists. Please use a different email or update the existing entry.");
-      //   setLoading(false);
-      //   return;
-      // }
+      if (existingOrganization) {
+        alert("This contact email already exists. Please use a different email.");
+        setLoading(false);
+        return;
+      }
 
       const { data: orgData, error: orgError } = await supabase
         .from("organizations")
@@ -324,7 +324,10 @@ export default function DynamicForm() {
           {/* Customer Information */}
           <fieldset className="mb-6">
             <legend>Customer Information</legend>
-           
+
+            <label className="block mb-4">Contact Email:
+            <input type="email" name="contactEmail" className="w-full mt-2 p-2 border rounded" value={formData.contactEmail || ""} onChange={handleChange} required />
+          </label>
             <label className="block mb-4">Contact Name:
               <input type="text" name="contactName" className="w-full mt-2 p-2 border rounded" value={formData.contactName || ""} onChange={handleChange} required />
             </label>
