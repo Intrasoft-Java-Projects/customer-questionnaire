@@ -68,12 +68,14 @@ export default function DynamicForm() {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const { name, value, type } = e.target;
+    const target = e.target; // Save reference to target
+    const { name, value, type } = target;
   
-    if (e.target instanceof HTMLInputElement && type === "checkbox") {
+    if (target instanceof HTMLInputElement && type === "checkbox") {
+      // ✅ Now TypeScript knows it's a checkbox
       setFormData((prevData) => ({
         ...prevData,
-        [name]: e.target.checked, // ✅ Safe because it's definitely a checkbox
+        [name]: target.checked, // No more TypeScript error
       }));
     } else {
       setFormData((prevData) => ({
@@ -81,7 +83,8 @@ export default function DynamicForm() {
         [name]: value,
       }));
     }
-  };  
+  };
+  
 
   useEffect(() => {
     console.log("Updated formData:", formData);
