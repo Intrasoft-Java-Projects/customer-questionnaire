@@ -170,7 +170,7 @@ export default function DynamicForm() {
       // Upsert responses (insert or update)
       const { error: responseError } = await supabase
       .from("responses")
-      .upsert(responsePayload, { onConflict: ["organization_id", "question_id"] }); // Ensure these columns have a unique constraint
+      .upsert(responsePayload, { onConflict: "organization_id,question_id" }); // ✅ Correct (string)
     
     if (responseError) throw responseError;
 
@@ -375,10 +375,10 @@ export default function DynamicForm() {
       );
 
       const { error } = await supabase
-        .from("progress")
-        .upsert(savePayload, {
-          onConflict: ["form_id", "contactEmail", "question_id"],
-        });
+      .from("progress")
+      .upsert(savePayload, {
+        onConflict: "form_id,contactEmail,question_id", // ✅ Correct format
+      });    
 
       if (error) throw error;
 
