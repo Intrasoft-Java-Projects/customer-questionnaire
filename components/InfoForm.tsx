@@ -112,7 +112,7 @@ export default function DynamicForm() {
         throw checkError;
       }
 
-      let organization_id;
+      let organization_id: number | null = null; // ✅ Explicit type
 
       if (existingOrganization) {
         // Update the existing record
@@ -120,10 +120,10 @@ export default function DynamicForm() {
           .from("organizations")
           .update(customerData)
           .eq("contactEmail", customerData.contactEmail);
-
+      
         if (updateError) throw updateError;
-
-        organization_id = existingOrganization.id;
+      
+        organization_id = existingOrganization.id; // ✅ TypeScript now recognizes organization_id as a number
       } else {
         // Insert new organization
         const { data: orgData, error: orgError } = await supabase
@@ -131,11 +131,11 @@ export default function DynamicForm() {
           .insert([customerData])
           .select("*")
           .single();
-
+      
         if (orgError) throw orgError;
-
-        organization_id = orgData.id;
-      }
+      
+        organization_id = orgData.id; // ✅ No TypeScript error anymore
+      }      
 
       // Prepare responses
       const responsePayload = await Promise.all(
