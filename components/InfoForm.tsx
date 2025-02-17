@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation"; 
+import { useSearchParams } from "next/navigation";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { data } from "autoprefixer";
 
@@ -70,7 +70,7 @@ export default function DynamicForm() {
   ) => {
     const target = e.target; // Save reference to target
     const { name, value, type } = target;
-  
+
     if (target instanceof HTMLInputElement && type === "checkbox") {
       // ✅ Now TypeScript knows it's a checkbox
       setFormData((prevData) => ({
@@ -84,7 +84,6 @@ export default function DynamicForm() {
       }));
     }
   };
-  
 
   useEffect(() => {
     console.log("Updated formData:", formData);
@@ -119,9 +118,9 @@ export default function DynamicForm() {
           .from("organizations")
           .update(customerData)
           .eq("contactEmail", customerData.contactEmail);
-      
+
         if (updateError) throw updateError;
-      
+
         organization_id = existingOrganization.id; // ✅ TypeScript now recognizes organization_id as a number
       } else {
         // Insert new organization
@@ -130,11 +129,11 @@ export default function DynamicForm() {
           .insert([customerData])
           .select("*")
           .single();
-      
+
         if (orgError) throw orgError;
-      
+
         organization_id = orgData.id; // ✅ No TypeScript error anymore
-      }      
+      }
 
       // Prepare responses
       const responsePayload = await Promise.all(
@@ -168,10 +167,10 @@ export default function DynamicForm() {
 
       // Upsert responses (insert or update)
       const { error: responseError } = await supabase
-      .from("responses")
-      .upsert(responsePayload, { onConflict: "organization_id,question_id" }); // ✅ Correct (string)
-    
-    if (responseError) throw responseError;
+        .from("responses")
+        .upsert(responsePayload, { onConflict: "organization_id,question_id" }); // ✅ Correct (string)
+
+      if (responseError) throw responseError;
 
       setSubmitted(true);
     } catch (error) {
@@ -373,11 +372,9 @@ export default function DynamicForm() {
         })
       );
 
-      const { error } = await supabase
-      .from("progress")
-      .upsert(savePayload, {
+      const { error } = await supabase.from("progress").upsert(savePayload, {
         onConflict: "form_id,contactEmail,question_id", // ✅ Correct format
-      });    
+      });
 
       if (error) throw error;
 
@@ -468,14 +465,33 @@ export default function DynamicForm() {
         className="m-4"
       />
       <h1 className="text-2xl font-bold text-primary m-4">
-        ERP Discovery Questionnaire
+        Discovery Questionnaire
       </h1>
 
-      <div className="px-8 py-4 max-w-3xl w-full">
-        <h3 className="font-bold text-primary">
-          This questionnaire is conducted with the utmost confidentiality, and
-          all responses will be kept strictly confidential.
-        </h3>
+      <div className="px-8 py-4 max-w-3xl w-full text-primary">
+        <p className="mb-4 text-lg">
+          Thank you for taking the time to complete this questionnaire.
+        </p>
+        <ul className="list-disc list-inside space-y-2 text-primary ">
+          <li>
+            If you can’t finish in one session, click{" "}
+            <span className="font-bold">Save Progress</span> at the bottom
+            right. When you return, search for your email to continue where you
+            left off.
+          </li>
+          <li>
+            Multiple respondents can fill out the same questionnaire but only
+            need to answer the sections relevant to their role.
+          </li>
+          <li>
+            Please complete all fields in your section(s) and provide detailed
+            responses in the text boxes.
+          </li>
+        </ul>
+        <p className="mt-4">
+          Your insights are invaluable in helping us understand the challenges
+          you face.
+        </p>
       </div>
 
       {submitted ? (
@@ -583,24 +599,12 @@ export default function DynamicForm() {
             ))
           )}
 
-          <div className="flex items-center justify-center">
-            <button
-              className={`${
-                loading
-                  ? "bg-primary cursor-not-allowed"
-                  : "bg-secondary hover:bg-primary"
-              } text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline`}
-              type="submit"
-              disabled={loading}
-            >
-              Submit
-            </button>
-          </div>
+          <div className="flex items-center justify-center"></div>
         </form>
       )}
       <button
         onClick={handleSubmit}
-        className="fixed bottom-8 right-8 bg-blue-500 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-blue-600 transition-colors"
+        className="fixed bottom-8 right-8 bg-[#0E2245] text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-[#0C1C38] transition-colors"
       >
         Save Progress
       </button>
