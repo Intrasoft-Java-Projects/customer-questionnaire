@@ -196,7 +196,7 @@ export default function DynamicForm() {
       case "text":
         return (
           <label key={id} className="block">
-            {label}
+            <span className="whitespace-pre-line">{label}</span> {/* Enables line breaks */}
             <input
               type="text"
               name={String(id)}
@@ -210,8 +210,8 @@ export default function DynamicForm() {
       case "radio":
         return (
           <div key={id} className="mb-4">
-            <label className="block">{label}</label>
-            {options?.map((option) => (
+          <span className="block whitespace-pre-line">{label}</span>
+          {options?.map((option) => (
               <label key={option.value} className="mr-4">
                 <input
                   type="radio"
@@ -263,8 +263,8 @@ export default function DynamicForm() {
       case "checkbox":
         return (
           <div key={id} className="mb-4">
-            <label className="block">{label}</label>
-            {options?.map((option) => (
+          <span className="block whitespace-pre-line">{label}</span>
+          {options?.map((option) => (
               <label key={option.value} className="mr-4 flex items-center">
                 <input
                   type="checkbox"
@@ -283,8 +283,8 @@ export default function DynamicForm() {
       case "file":
         return (
           <label key={id} className="block mb-4">
-            {label}
-            <input
+          <span className="whitespace-pre-line">{label}</span>
+          <input
               type="file"
               name={String(id)}
               onChange={(e) => handleFileChange(e, id)}
@@ -301,8 +301,8 @@ export default function DynamicForm() {
       case "textarea":
         return (
           <label key={id} className="block mb-4">
-            {label}
-            <textarea
+          <span className="whitespace-pre-line">{label}</span>
+          <textarea
               name={String(id)}
               value={formData[id] || ""}
               onChange={handleChange}
