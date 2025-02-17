@@ -243,7 +243,7 @@ export default function DynamicForm() {
       case "select":
         return (
           <div key={id} className="mb-4">
-            <label className="block">{label}</label>
+            <label className="block whitespace-pre-line">{label}</label>
             <select
               name={String(id)}
               value={formData[id] || ""}
