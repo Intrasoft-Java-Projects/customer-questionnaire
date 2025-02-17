@@ -96,7 +96,6 @@ export default function DynamicForm() {
     try {
       const customerData = {
         contactName: formData.contactName,
-        jobScope: formData.jobScope,
         jobTitle: formData.jobTitle,
         contactEmail: formData.contactEmail,
       };
@@ -529,18 +528,6 @@ export default function DynamicForm() {
                 name="jobTitle"
                 className="w-full mt-2 p-2 border rounded"
                 value={formData.jobTitle || ""}
-                onChange={handleChange}
-                required
-              />
-            </label>
-            <label className="block mb-4">
-              Job Scope (i.e., Vehicles, Spares, Service, Other OEM (Zeekr,
-              Smart, Chery)):
-              <input
-                type="tel"
-                name="jobScope"
-                className="w-full mt-2 p-2 border rounded"
-                value={formData.jobScope || ""}
                 onChange={handleChange}
                 required
               />
