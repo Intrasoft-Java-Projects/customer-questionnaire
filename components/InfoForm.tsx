@@ -475,9 +475,9 @@ export default function DynamicForm() {
         <ul className="list-disc list-inside space-y-2 text-primary ">
           <li>
             If you can’t finish in one session, click{" "}
-            <span className="font-bold">Save Progress</span> at the
-            bottom right. When you return, search for your email to continue
-            where you left off.
+            <span className="font-bold">Save Progress</span> at the bottom
+            right. When you return, search for your email to continue where you
+            left off.
           </li>
           <li>
             Multiple respondents can fill out the same questionnaire but only
@@ -599,24 +599,12 @@ export default function DynamicForm() {
             ))
           )}
 
-          <div className="flex items-center justify-center">
-            <button
-              className={`${
-                loading
-                  ? "bg-primary cursor-not-allowed"
-                  : "bg-secondary hover:bg-primary"
-              } text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline`}
-              type="submit"
-              disabled={loading}
-            >
-              Submit
-            </button>
-          </div>
+          <div className="flex items-center justify-center"></div>
         </form>
       )}
       <button
         onClick={handleSubmit}
-        className="fixed bottom-8 right-8 bg-blue-500 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-blue-600 transition-colors"
+        className="fixed bottom-8 right-8 bg-[#0E2245] text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-[#0C1C38] transition-colors"
       >
         Save Progress
       </button>
