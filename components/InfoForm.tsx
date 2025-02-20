@@ -476,8 +476,7 @@ export default function DynamicForm() {
           <li>
             If you can’t finish in one session, click{" "}
             <span className="font-bold">Save Progress</span> at the bottom
-            right. When you return, search for your email to continue where you
-            left off.
+            right. When you return, enter your email, and click the magnifying glass to continue where you left off.
           </li>
           <li>
             Multiple respondents can fill out the same questionnaire but only
