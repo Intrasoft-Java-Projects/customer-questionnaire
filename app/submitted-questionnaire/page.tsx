@@ -6,12 +6,12 @@ import { saveAs } from "file-saver";
 import { Console } from "console";
 
 interface FormattedData {
-    Section: any;
-    Question: any;
-    Answer: any;
-    Contact_Name: any;
-    Contact_Email: any;
-  }
+  Section: any;
+  Question: any;
+  Answer: any;
+  Contact_Name: any;
+  Contact_Email: any;
+}
 
 export default function SubmittedQuestionnaire() {
   const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -100,135 +100,142 @@ export default function SubmittedQuestionnaire() {
     fetchSubmittedQuestionnaire();
   }, [formId]);
 
-  const handleExportToExcel = async () => {
+
+
+const handleExportToExcel = async () => {
     try {
-      console.log("🔄 Starting Export...");
-      if (!formId) {
-        window.alert("⚠️ Please select a form.");
-        return;
-      }
-  
-      // Fetch data from Supabase
-      const { data, error } = await supabase
-        .from("questions")
-        .select(
-          `id, label, section, responses (answer, organization_id, organizations (contactName, contactEmail, jobTitle))`
-        )
-        .eq("form_id", formId);
-  
-      if (error) {
-        console.error("❌ Error fetching data:", error.message);
-        return;
-      }
-  
-      console.log("✅ Fetched Data:", data);
-  
-      if (!data || data.length === 0) {
-        console.warn("⚠️ No data available for export.");
-        return;
-      }
-  
-      // Process data and extract file URLs
-      const formattedData = data.flatMap((question) =>
-        question.responses.flatMap((response) => {
-          const organizations = Array.isArray(response.organizations)
-            ? response.organizations
-            : [response.organizations];
-  
-          // Check if answer contains file path
-          const filePath = response.answer && response.answer.startsWith('files/')
-            ? response.answer
-            : null;
-  
-          console.log("filePath = ", filePath);
-  
-          // Generate the file URL using Supabase Storage
-          const fileUrl = filePath
-            ? supabase.storage
-                .from("organization_descriptions")  // Use your bucket name here
-                .getPublicUrl(filePath).data.publicUrl
-            : null;
-  
-          console.log("fileUrl = ", fileUrl);
-  
-          // Modify the answer column to contain the file URL as a hyperlink
-          const answer = fileUrl
-            ? {
-                t: 's', // string
-                v: 'Download File', // Display text
-                l: { Target: fileUrl }, // Link target (actual URL)
-              }
-            : {
-                t: 's', // string
-                v: response.answer,
-              };
-  
-          return organizations.map((org) => ({
-            Section: question.section,
-            Question: question.label,
-            Answer: answer,  // Add the hyperlink directly in the Answer column
-            Contact_Name: org?.contactName || "N/A",
-            Contact_Email: org?.contactEmail || "N/A",
-          }));
-        })
-      );
-  
-      console.log("✅ Formatted Data:", formattedData);
-  
-      if (formattedData.length === 0) {
-        console.warn("⚠️ No valid responses found.");
-        window.alert("⚠️ No data available for export.");
-        return;
-      }
-  
-      // Create an Excel worksheet
-      const worksheet = XLSX.utils.json_to_sheet(formattedData);
-  
-      // Styling: Set the first row (header) to be bold
-      const header = worksheet['!rows'] || [];
-      for (let i = 0; i < formattedData.length; i++) {
-        const rowIndex = i + 2; // Skip first row as it's the header
-        for (let key in formattedData[i] as FormattedData) {
-          const cellAddress = `${key}${rowIndex}`;
-          if (worksheet[cellAddress]) {
-            worksheet[cellAddress].s = { font: { bold: true } }; // Apply bold font
-          }
+        console.log("🔄 Starting Export...");
+        if (!formId) {
+            window.alert("⚠️ Please select a form.");
+            return;
         }
-      }
-  
-      // Auto adjust column width
-      const colWidths = Object.keys(formattedData[0]).map((key) => {
-        // Type assertion: key is a valid key of FormattedData
-        return {
-          wch: Math.max(...formattedData.map((row) => (row[key as keyof FormattedData] || '').toString().length)) + 2, // Add some padding
-        };
-      });
-  
-      worksheet['!cols'] = colWidths;
-  
-      // Create a workbook and append the worksheet
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Responses");
-  
-      // Generate and save the Excel file
-      const excelBuffer = XLSX.write(workbook, {
-        bookType: "xlsx",
-        type: "array",
-      });
-      const dataBlob = new Blob([excelBuffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-      saveAs(dataBlob, `Form_${formId}_Responses.xlsx`);
-  
-      console.log("✅ Export Successful!");
+
+        // Fetch data from Supabase
+        const { data, error } = await supabase
+            .from("questions")
+            .select(`
+                id, label, section, responses (
+                    answer, organization_id, organizations (
+                        contactName, contactEmail, jobTitle
+                    )
+                )
+            `)
+            .eq("form_id", formId);
+
+        if (error) {
+            console.error("❌ Error fetching data:", error.message);
+            return;
+        }
+
+        console.log("✅ Fetched Data:", data);
+
+        if (!data || data.length === 0) {
+            console.warn("⚠️ No data available for export.");
+            return;
+        }
+
+        // Step 1: Organize data into questionMap and userMap
+        const questionMap = new Map();
+        const userMap = new Map();
+
+        data.forEach((question) => {
+            const questionKey = `${question.section} - ${question.label}`; // "Section - Question"
+            questionMap.set(questionKey, questionKey); // Ensure unique column headers
+
+            question.responses.forEach((response) => {
+                const organizations = Array.isArray(response.organizations)
+                    ? response.organizations
+                    : [response.organizations];
+
+                organizations.forEach((org) => {
+                    const userName = org.contactName || "Unknown";
+
+                    if (!userMap.has(userName)) {
+                        userMap.set(userName, {});
+                    }
+
+                    // Check if the answer is a file path and convert it to a downloadable URL
+                    let answer = response.answer || "N/A";
+                    if (answer.startsWith("files/")) {
+                        const fileUrl = supabase.storage
+                            .from("organization_descriptions") // Update with your bucket name
+                            .getPublicUrl(answer).data.publicUrl;
+
+                        console.log(`File URL for ${answer}:`, fileUrl);
+
+                        answer = {
+                            t: "s", // String type
+                            v: "Download File", // Display text
+                            l: { Target: fileUrl }, // Link
+                        };
+                    }
+
+                    userMap.get(userName)[questionKey] = answer;
+                });
+            });
+        });
+
+        // Step 2: Convert Maps to Array format
+        const columnHeaders = ["User Name", ...Array.from(questionMap.keys())]; // Column headers with section and question
+        const rowData = Array.from(userMap.entries()).map(([user, answers]) => [
+            user,
+            ...columnHeaders.slice(1).map((key) => answers[key] || "N/A"),
+        ]);
+
+        const formattedData = [columnHeaders, ...rowData];
+
+        console.log("✅ Formatted Data:", formattedData);
+
+        if (formattedData.length === 0) {
+            console.warn("⚠️ No valid responses found.");
+            window.alert("⚠️ No data available for export.");
+            return;
+        }
+
+        // Step 3: Create an Excel worksheet
+        const worksheet = XLSX.utils.aoa_to_sheet(formattedData);
+
+        // Auto adjust column width
+        const colWidths = formattedData[0].map((_, colIndex) => ({
+            wch: Math.max(...formattedData.map((row) => (row[colIndex] || "").toString().length)) + 2, // Padding
+        }));
+
+        worksheet["!cols"] = colWidths;
+
+        // Create a workbook and append the worksheet
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Responses");
+
+        // Generate and save the Excel file
+        const excelBuffer = XLSX.write(workbook, {
+            bookType: "xlsx",
+            type: "array",
+        });
+
+        const dataBlob = new Blob([excelBuffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+
+        const fileName = `Form_${formId}_Responses.xlsx`;
+
+        // Create a download link
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        console.log("✅ Export Successful! File Ready for Download.");
+
     } catch (error) {
-      console.error("❌ Unexpected Error:", error);
+        console.error("❌ Unexpected Error:", error);
     }
-  };
-  
-    
-  
-  
+};
+
+
+
 
   const getFormId = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const formId = event.target.value; // Get the selected formId (could be empty "")
@@ -236,72 +243,72 @@ export default function SubmittedQuestionnaire() {
     console.log("select = ", formId);
   };
 
-//   const handleRowClick = (email: string) => {
-//     window.location.href = `/another-page?email=${encodeURIComponent(email)}`;
-//   };
+  //   const handleRowClick = (email: string) => {
+  //     window.location.href = `/another-page?email=${encodeURIComponent(email)}`;
+  //   };
 
-//   const handleSearch = async () => {
-//     console.log("🔄 Starting Search...");
+  //   const handleSearch = async () => {
+  //     console.log("🔄 Starting Search...");
 
-//     if (!formId) {
-//       window.alert("⚠️ Please select a form.");
-//       return;
-//     }
+  //     if (!formId) {
+  //       window.alert("⚠️ Please select a form.");
+  //       return;
+  //     }
 
-//     try {
-//       const { data, error } = await supabase
-//         .from("questions")
-//         .select(
-//           `id,
-//         label,
-//         section,
-//         responses (
-//           responses_id,
-//           answer,
-//           organization_id,
-//           organizations (
-//             id,
-//             contactName,
-//             contactEmail,
-//             jobTitle
-//           )
-//         )`
-//         )
-//         .eq("form_id", formId);
+  //     try {
+  //       const { data, error } = await supabase
+  //         .from("questions")
+  //         .select(
+  //           `id,
+  //         label,
+  //         section,
+  //         responses (
+  //           responses_id,
+  //           answer,
+  //           organization_id,
+  //           organizations (
+  //             id,
+  //             contactName,
+  //             contactEmail,
+  //             jobTitle
+  //           )
+  //         )`
+  //         )
+  //         .eq("form_id", formId);
 
-//       if (error) {
-//         console.error("❌ Error fetching data:", error.message);
-//         return;
-//       }
+  //       if (error) {
+  //         console.error("❌ Error fetching data:", error.message);
+  //         return;
+  //       }
 
-//       console.log("✅ Fetched Data:", data);
+  //       console.log("✅ Fetched Data:", data);
 
-//       if (!data || data.length === 0) {
-//         console.warn("⚠️ No data found.");
-//         return;
-//       }
+  //       if (!data || data.length === 0) {
+  //         console.warn("⚠️ No data found.");
+  //         return;
+  //       }
 
-//       // Extracting contact information from the responses
-//       const contactInfo = data.flatMap((question) =>
-//         question.responses.flatMap(
-//           (response) =>
-//             response.organizations?.map((org) => ({
-//               Contact_Name: org.contactName,
-//               Contact_Email: org.contactEmail,
-//               Job_Title: org.jobTitle,
-//             })) || []
-//         )
-//       );
-//       // Update the global contactInfo state
-//       setContactInfo(contactInfo);
-//       console.log("✅ Contact Information:", contactInfo);
+  //       // Extracting contact information from the responses
+  //       const contactInfo = data.flatMap((question) =>
+  //         question.responses.flatMap(
+  //           (response) =>
+  //             response.organizations?.map((org) => ({
+  //               Contact_Name: org.contactName,
+  //               Contact_Email: org.contactEmail,
+  //               Job_Title: org.jobTitle,
+  //             })) || []
+  //         )
+  //       );
+  //       // Update the global contactInfo state
+  //       setContactInfo(contactInfo);
+  //       console.log("✅ Contact Information:", contactInfo);
 
-//       // Now, you can use `contactInfo` as needed, for example:
-//       // setContactData(contactInfo);  // Or handle it as required
-//     } catch (error) {
-//       console.error("❌ Unexpected Error:", error);
-//     }
-//   };
+  //       // Now, you can use `contactInfo` as needed, for example:
+  //       // setContactData(contactInfo);  // Or handle it as required
+  //     } catch (error) {
+  //       console.error("❌ Unexpected Error:", error);
+  //     }
+  //   };
 
   return (
     <div className="min-h-screen flex flex-col justify-center bg-gradient-to-r from-indigo-600 to-purple-600">
