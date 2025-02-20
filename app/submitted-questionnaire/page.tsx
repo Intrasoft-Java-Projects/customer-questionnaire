@@ -155,7 +155,7 @@ const handleExportToExcel = async () => {
                     }
 
                     // Check if the answer is a file path and convert it to a downloadable URL
-                    let answer = response.answer || "N/A";
+                    let answer = response.answer || "[Blank]";
                     if (answer.startsWith("files/")) {
                         const fileUrl = supabase.storage
                             .from("organization_descriptions") // Update with your bucket name
@@ -179,7 +179,7 @@ const handleExportToExcel = async () => {
         const columnHeaders = ["User Name", ...Array.from(questionMap.keys())]; // Column headers with section and question
         const rowData = Array.from(userMap.entries()).map(([user, answers]) => [
             user,
-            ...columnHeaders.slice(1).map((key) => answers[key] || "N/A"),
+            ...columnHeaders.slice(1).map((key) => answers[key] || "[Blank]"),
         ]);
 
         const formattedData = [columnHeaders, ...rowData];
