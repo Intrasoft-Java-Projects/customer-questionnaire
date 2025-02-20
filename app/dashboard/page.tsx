@@ -31,9 +31,9 @@ export default function Login() {
     const handleViewSubmittedQuestionnaire = () => {
         router.push('/submitted-questionnaire');  // Redirect to the new screen (page)
     };
-    const handleViewQuestions = () => {
-        router.push('/submitted-questions');  // Redirect to the new screen (page)
-    };
+    // const handleViewQuestions = () => {
+    //     router.push('/submitted-questions');  // Redirect to the new screen (page)
+    // };
     
 
     if (isLoggedIn) {
@@ -43,27 +43,27 @@ export default function Login() {
                     <h1 className="text-3xl font-semibold text-center text-indigo-600 mb-6">Welcome to Your Dashboard</h1>
                     <p className="text-lg text-center text-gray-600 mb-8">Choose an option below to proceed:</p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
                         <button
                             onClick={handleViewSubmittedQuestionnaire}  // Use the handler to navigate
                             className="w-full bg-blue-500 text-white py-4 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none transform transition-all duration-300 ease-in-out hover:scale-105"
                         >
                             View Submitted Questionnaire
                         </button>
-                        <button
+                        {/* <button
                             onClick={handleViewQuestions}
                             className="w-full bg-green-500 text-white py-4 rounded-lg shadow-md hover:bg-green-600 focus:outline-none transform transition-all duration-300 ease-in-out hover:scale-105"
                         >
                             View Questions
-                        </button>
+                        </button> */}
                     </div>
 
-                    <button
+                    {/* <button
                         onClick={handleLogout}
                         className="mt-6 w-full bg-red-500 text-white py-4 rounded-lg shadow-md hover:bg-red-600 focus:outline-none transform transition-all duration-300 ease-in-out hover:scale-105"
                     >
                         Logout
-                    </button>
+                    </button> */}
                 </div>
             </div>
         );
