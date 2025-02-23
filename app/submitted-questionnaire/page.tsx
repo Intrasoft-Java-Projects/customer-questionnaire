@@ -20,6 +20,8 @@ export default function SubmittedQuestionnaire() {
 
   // State to store the fetched form IDs and submitted data
   const [formIds, setFormIds] = useState<number[]>([]);
+  const [forms, setForms] = useState<{ formId: any; formName: any }[]>([]);
+
   const [submittedData, setSubmittedData] = useState<
     { contactName: string; contactEmail: string; jobTitle: string }[]
   >([]);
@@ -30,22 +32,51 @@ export default function SubmittedQuestionnaire() {
 
   useEffect(() => {
     const fetchFormIds = async () => {
-      const { data, error } = await supabase
-        .from("questions")
-        .select("form_id");
-
-      if (error) {
-        console.error("Error fetching form ids: ", error.message);
-      } else {
-        const uniqueFormIds = Array.from(
-          new Set(data?.map((item) => item.form_id))
-        );
-        setFormIds(uniqueFormIds);
+      let allData: { form_id: number; form_name: string }[] = []; // Explicitly define type
+      let hasMoreData = true;
+      let offset = 0;
+      const limit = 1000; // Fetch 1000 records at a time
+  
+      while (hasMoreData) {
+        const { data, error } = await supabase
+          .from("questions")
+          .select("form_id, form_name")
+          .order("id")
+          .range(offset, offset + limit - 1); // Fetch records in chunks of 1000
+  
+        if (error) {
+          console.error("Error fetching form ids: ", error.message);
+          break;
+        }
+  
+        if (data && data.length > 0) {
+          allData = allData.concat(data); // Add the fetched data to allData array
+          offset += limit; // Increase the offset for the next batch
+        } else {
+          hasMoreData = false; // No more data to fetch
+        }
       }
+  
+      // Remove duplicates by form_id and form_name
+      const uniqueForms = Array.from(
+        new Map(
+          allData.map((item) => [
+            `${item.form_id}-${item.form_name}`, // Ensure uniqueness by form_id and form_name
+            { formId: item.form_id, formName: item.form_name },
+          ])
+        ).values()
+      );
+  
+      // Sort the forms by form_id (ascending)
+      const sortedForms = uniqueForms.sort((a, b) => a.formId - b.formId);
+  
+      // Set the sorted and unique forms
+      setForms(sortedForms);
     };
-
+  
     fetchFormIds();
-  }, []);
+  }, []);    
+  
 
   useEffect(() => {
     setSubmittedData([]);
@@ -53,45 +84,88 @@ export default function SubmittedQuestionnaire() {
       try {
         if (!formId) return;
 
-        console.log(`Fetching submitted users for Form ID: ${formId}`);
-
-        // Fetch users who submitted responses for the selected form
-        const { data, error } = await supabase
-          .from("questions")
-          .select(
+        if (formId == 0) {
+          const { data, error } = await supabase.from("questions").select(
             `
-            responses (
-              organization_id,
-              organizations (
-                id,
-                contactName,
-                contactEmail,
-                jobTitle
+              responses (
+                organization_id,
+                organizations (
+                  id,
+                  contactName,
+                  contactEmail,
+                  jobTitle
+                )
               )
+            `
+          );
+          console.log(`Fetching submitted users for Form ID: ${formId}`);
+
+          // Fetch users who submitted responses for the selected form
+
+          if (error) {
+            throw new Error(error.message);
+          }
+
+          console.log("✅ Raw Data:", data);
+
+          // Extract unique users from responses
+          const users = data.flatMap((question) =>
+            question.responses.flatMap(
+              (response) => response.organizations || []
             )
-          `
-          )
-          .eq("form_id", formId);
+          );
 
-        if (error) {
-          throw new Error(error.message);
+          // Remove duplicate users based on organization_id
+          const uniqueUsers = Array.from(
+            new Map(users.map((user) => [user.id, user])).values()
+          );
+
+          console.log("✅ Unique Users:", uniqueUsers);
+
+          setSubmittedData(uniqueUsers);
+        } else {
+          const { data, error } = await supabase
+            .from("questions")
+            .select(
+              `
+              responses (
+                organization_id,
+                organizations (
+                  id,
+                  contactName,
+                  contactEmail,
+                  jobTitle
+                )
+              )
+            `
+            )
+            .eq("form_id", formId);
+          console.log(`Fetching submitted users for Form ID: ${formId}`);
+
+          // Fetch users who submitted responses for the selected form
+
+          if (error) {
+            throw new Error(error.message);
+          }
+
+          console.log("✅ Raw Data:", data);
+
+          // Extract unique users from responses
+          const users = data.flatMap((question) =>
+            question.responses.flatMap(
+              (response) => response.organizations || []
+            )
+          );
+
+          // Remove duplicate users based on organization_id
+          const uniqueUsers = Array.from(
+            new Map(users.map((user) => [user.id, user])).values()
+          );
+
+          console.log("✅ Unique Users:", uniqueUsers);
+
+          setSubmittedData(uniqueUsers);
         }
-
-        console.log("✅ Raw Data:", data);
-
-        // Extract unique users from responses
-        const users = data.flatMap((question) =>
-          question.responses.flatMap((response) => response.organizations || [])
-        );
-
-        // Remove duplicate users based on organization_id
-        const uniqueUsers = Array.from(
-          new Map(users.map((user) => [user.id, user])).values()
-        );
-
-        console.log("✅ Unique Users:", uniqueUsers);
-
-        setSubmittedData(uniqueUsers);
       } catch (error) {
         console.error("❌ Error fetching submitted users:", error);
       }
@@ -100,142 +174,159 @@ export default function SubmittedQuestionnaire() {
     fetchSubmittedQuestionnaire();
   }, [formId]);
 
-
-
-const handleExportToExcel = async () => {
+  const handleExportToExcel = async () => {
     try {
-        console.log("🔄 Starting Export...");
-        if (!formId) {
-            window.alert("⚠️ Please select a form.");
-            return;
-        }
+      console.log("🔄 Starting Export...");
+      if (!formId) {
+        window.alert("⚠️ Please select a form.");
+        return;
+      }
 
-        // Fetch data from Supabase
-        const { data, error } = await supabase
-            .from("questions")
-            .select(`
+      // Fetch data from Supabase
+      const { data, error } = await supabase
+        .from("questions")
+        .select(
+          `
                 id, label, section, responses (
                     answer, organization_id, organizations (
                         contactName, contactEmail, jobTitle
                     )
                 )
-            `)
-            .eq("form_id", formId);
+            `
+        )
+        .order("id")
+        .eq("form_id", formId);
 
-        if (error) {
-            console.error("❌ Error fetching data:", error.message);
-            return;
-        }
+      if (error) {
+        console.error("❌ Error fetching data:", error.message);
+        return;
+      }
 
-        console.log("✅ Fetched Data:", data);
+      console.log("✅ Fetched Data:", data);
 
-        if (!data || data.length === 0) {
-            console.warn("⚠️ No data available for export.");
-            return;
-        }
+      if (!data || data.length === 0) {
+        console.warn("⚠️ No data available for export.");
+        return;
+      }
 
-        // Step 1: Organize data into questionMap and userMap
-        const questionMap = new Map();
-        const userMap = new Map();
+      // Step 1: Organize data into questionMap and userMap
+      const questionMap = new Map();
+      const userMap = new Map();
 
-        data.forEach((question) => {
-            const questionKey = `${question.section} - ${question.label}`; // "Section - Question"
-            questionMap.set(questionKey, questionKey); // Ensure unique column headers
+      data.forEach((question) => {
+        // Ensure uniqueness using section, label, and question ID
+        const questionKey = `${question.section} - ${question.label} - ${question.id}`;
+        questionMap.set(questionKey, {
+          label: `${question.section} - ${question.label}`,
+          id: question.id,
+        }); // Store the label and id
 
-            question.responses.forEach((response) => {
-                const organizations = Array.isArray(response.organizations)
-                    ? response.organizations
-                    : [response.organizations];
+        question.responses.forEach((response) => {
+          const organizations = Array.isArray(response.organizations)
+            ? response.organizations
+            : [response.organizations];
 
-                organizations.forEach((org) => {
-                    const userName = org.contactName || "Unknown";
+          organizations.forEach((org) => {
+            const userName = org.contactName || "Unknown";
 
-                    if (!userMap.has(userName)) {
-                        userMap.set(userName, {});
-                    }
+            // Initialize user data if not already created
+            if (!userMap.has(userName)) {
+              userMap.set(userName, {});
+            }
 
-                    // Check if the answer is a file path and convert it to a downloadable URL
-                    let answer = response.answer || "[Blank]";
-                    if (answer.startsWith("files/")) {
-                        const fileUrl = supabase.storage
-                            .from("organization_descriptions") // Update with your bucket name
-                            .getPublicUrl(answer).data.publicUrl;
+            // Handle file path answers
+            let answer = response.answer || "[Blank]";
+            if (answer.startsWith("files/")) {
+              const fileUrl = supabase.storage
+                .from("organization_descriptions")
+                .getPublicUrl(answer).data.publicUrl;
 
-                        console.log(`File URL for ${answer}:`, fileUrl);
+              answer = {
+                t: "s",
+                v: "Download File",
+                l: { Target: fileUrl },
+              };
+            }
 
-                        answer = {
-                            t: "s", // String type
-                            v: "Download File", // Display text
-                            l: { Target: fileUrl }, // Link
-                        };
-                    }
-
-                    userMap.get(userName)[questionKey] = answer;
-                });
-            });
+            // Store the answer for the current user and question
+            userMap.get(userName)[questionKey] = answer;
+          });
         });
+      });
 
-        // Step 2: Convert Maps to Array format
-        const columnHeaders = ["User Name", ...Array.from(questionMap.keys())]; // Column headers with section and question
-        const rowData = Array.from(userMap.entries()).map(([user, answers]) => [
-            user,
-            ...columnHeaders.slice(1).map((key) => answers[key] || "[Blank]"),
-        ]);
+      // Step 2: Convert Maps to Array format
+      const rowHeaders = Array.from(questionMap.values()); // Questions as rows
+      const columnHeaders = ["User Name", ...Array.from(userMap.keys())]; // User names as columns
 
-        const formattedData = [columnHeaders, ...rowData];
-
-        console.log("✅ Formatted Data:", formattedData);
-
-        if (formattedData.length === 0) {
-            console.warn("⚠️ No valid responses found.");
-            window.alert("⚠️ No data available for export.");
-            return;
-        }
-
-        // Step 3: Create an Excel worksheet
-        const worksheet = XLSX.utils.aoa_to_sheet(formattedData);
-
-        // Auto adjust column width
-        const colWidths = formattedData[0].map((_, colIndex) => ({
-            wch: Math.max(...formattedData.map((row) => (row[colIndex] || "").toString().length)) + 2, // Padding
-        }));
-
-        worksheet["!cols"] = colWidths;
-
-        // Create a workbook and append the worksheet
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Responses");
-
-        // Generate and save the Excel file
-        const excelBuffer = XLSX.write(workbook, {
-            bookType: "xlsx",
-            type: "array",
+      // For each question, we will create a row with answers for each user
+      const rowData = rowHeaders.map(({ label, id }) => {
+        const row = [label]; // Start with the question label
+        // Add the answer for each user (or [Blank] if not found)
+        columnHeaders.slice(1).forEach((userName) => {
+          const userAnswers = userMap.get(userName);
+          const questionKey = `${label} - ${id}`; // Reconstruct the question key
+          const answer = userAnswers ? userAnswers[questionKey] : "[Blank]";
+          row.push(answer);
         });
+        return row;
+      });
 
-        const dataBlob = new Blob([excelBuffer], {
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
+      // Combine headers and data into final formatted data
+      const formattedData = [columnHeaders, ...rowData];
 
-        const fileName = `Form_${formId}_Responses.xlsx`;
+      console.log("✅ Formatted Data:", formattedData);
 
-        // Create a download link
-        const url = URL.createObjectURL(dataBlob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      if (formattedData.length === 0) {
+        console.warn("⚠️ No valid responses found.");
+        window.alert("⚠️ No data available for export.");
+        return;
+      }
 
-        console.log("✅ Export Successful! File Ready for Download.");
+      // Step 3: Create an Excel worksheet
+      const worksheet = XLSX.utils.aoa_to_sheet(formattedData);
 
+      // Auto adjust column width
+      const colWidths = formattedData[0].map((_, colIndex) => ({
+        wch:
+          Math.max(
+            ...formattedData.map(
+              (row) => (row[colIndex] || "").toString().length
+            )
+          ) + 2, // Padding
+      }));
+
+      worksheet["!cols"] = colWidths;
+
+      // Create a workbook and append the worksheet
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Responses");
+
+      // Generate and save the Excel file
+      const excelBuffer = XLSX.write(workbook, {
+        bookType: "xlsx",
+        type: "array",
+      });
+
+      const dataBlob = new Blob([excelBuffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const fileName = `Form_${formId}_Responses.xlsx`;
+
+      // Create a download link
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      console.log("✅ Export Successful! File Ready for Download.");
     } catch (error) {
-        console.error("❌ Unexpected Error:", error);
+      console.error("❌ Unexpected Error:", error);
     }
-};
-
-
-
+  };
 
   const getFormId = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const formId = event.target.value; // Get the selected formId (could be empty "")
@@ -329,14 +420,18 @@ const handleExportToExcel = async () => {
             <select
               id="formId"
               value={formId}
-              onChange={getFormId} // Call the function without directly passing event
+              onChange={getFormId}
               className="p-2 border border-gray-300 rounded"
             >
-              <option value="">-- Select Form --</option> {/* Empty option */}
-              {/* Populate dropdown dynamically with form IDs */}
-              {formIds.map((id) => (
-                <option key={id} value={id}>
-                  Form {id}
+              <option key="" value="">
+                -- Select Form --
+              </option>
+              {/* <option key={0} value={0}>
+                All forms
+              </option> */}
+              {forms.map((form) => (
+                <option key={form.formId} value={form.formId}>
+                  Form {form.formId} - {form.formName}
                 </option>
               ))}
             </select>
