@@ -172,7 +172,7 @@ export default function DynamicForm() {
         .upsert(responsePayload, { onConflict: "organization_id,question_id" }); // ✅ Correct (string)
 
       if (responseError) throw responseError;
-
+      window.alert("Progress saved successfuly!");
       setSubmitted(true);
     } catch (error) {
       console.error("Submission error:", error);
@@ -502,123 +502,116 @@ export default function DynamicForm() {
         </p>
       </div>
 
-      {submitted ? (
-        <h1 className="text-2xl text-green-600 mb-4 font-semibold">
-          Thank you for submitting!
-        </h1>
-      ) : (
-        <form
-          className="bg-white shadow-lg p-8 rounded-lg max-w-3xl w-full"
-          onSubmit={handleSubmit}
-          encType="multipart/form-data"
-        >
-          {/* Customer Information */}
-          <fieldset className="mb-6">
-            <legend>Customer Information</legend>
-            <label className="block mb-4">
-              Contact Email:
-              <span className="text-sm text-gray-500 ml-2">
-                (Please enter your email and click search to access the
-                questionnaire)
-              </span>
-              <div className="flex items-center mt-2">
-                <input
-                  type="email"
-                  name="contactEmail"
-                  className="w-full p-2 border rounded"
-                  value={formData.contactEmail || ""}
-                  onChange={handleChange}
-                  required
-                />
-                <button
-                  type="button"
-                  className="ml-2 bg-[#0E2245] text-white px-3 py-1 rounded-md hover:bg-indigo-700 transition"
-                  onClick={handleSearch}
-                >
-                  Search
-                </button>
-              </div>
-            </label>
-            <label className="block mb-4">
-              Contact Name:
+      <form
+        className="bg-white shadow-lg p-8 rounded-lg max-w-3xl w-full"
+        onSubmit={handleSubmit}
+        encType="multipart/form-data"
+      >
+        {/* Customer Information */}
+        <fieldset className="mb-6">
+          <legend>Customer Information</legend>
+          <label className="block mb-4">
+            Contact Email:
+            <span className="text-sm text-gray-500 ml-2">
+              (Please enter your email and click search to access the
+              questionnaire)
+            </span>
+            <div className="flex items-center mt-2">
               <input
-                type="text"
-                name="contactName"
-                className="w-full mt-2 p-2 border rounded"
-                value={formData.contactName || ""}
+                type="email"
+                name="contactEmail"
+                className="w-full p-2 border rounded"
+                value={formData.contactEmail || ""}
                 onChange={handleChange}
                 required
               />
-            </label>
-            <label className="block mb-4">
-              Job Title:
-              <input
-                type="text"
-                name="jobTitle"
-                className="w-full mt-2 p-2 border rounded"
-                value={formData.jobTitle || ""}
-                onChange={handleChange}
-                required
-              />
-            </label>
-          </fieldset>
+              <button
+                type="button"
+                className="ml-2 bg-[#0E2245] text-white px-3 py-1 rounded-md hover:bg-indigo-700 transition"
+                onClick={handleSearch}
+              >
+                Search
+              </button>
+            </div>
+          </label>
+          <label className="block mb-4">
+            Contact Name:
+            <input
+              type="text"
+              name="contactName"
+              className="w-full mt-2 p-2 border rounded"
+              value={formData.contactName || ""}
+              onChange={handleChange}
+              required
+            />
+          </label>
+          <label className="block mb-4">
+            Job Title:
+            <input
+              type="text"
+              name="jobTitle"
+              className="w-full mt-2 p-2 border rounded"
+              value={formData.jobTitle || ""}
+              onChange={handleChange}
+              required
+            />
+          </label>
+        </fieldset>
 
-          {/* Dynamic Questions */}
-          {emailSearched ? (
-            loading ? (
-              <p>Loading...</p>
-            ) : (
-              Object.entries(groupedQuestions).map(([section, subsections]) => (
-                <fieldset key={section} className="mb-6">
-                  <legend className="font-bold">
-                    <button
-                      type="button"
-                      onClick={() => toggleCollapse(section)}
-                      className="text-left w-full"
-                    >
-                      {sectionCounter++}. {section}
-                    </button>
-                  </legend>
-                  {!collapsedSections[section] &&
-                    Object.entries(subsections).map(([subsection, questions]) =>
-                      subsection === "No Subsection" ? (
-                        questions
-                          .filter((question) => !question.parent_question_id)
-                          .map((question) => (
-                            <div key={question.id}>
-                              {renderQuestion(question)}
-                            </div>
-                          ))
-                      ) : (
-                        <fieldset key={subsection} className="mb-6">
-                          <legend className="subLegend">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                toggleCollapse(`${section}-${subsection}`)
-                              }
-                              className="text-left w-full"
-                            >
-                              {subsection}
-                            </button>
-                          </legend>
-                          {!collapsedSections[`${section}-${subsection}`] &&
-                            questions
-                              .filter(
-                                (question) => !question.parent_question_id
-                              )
-                              .map((question) => renderQuestion(question))}
-                        </fieldset>
-                      )
-                    )}
-                </fieldset>
-              ))
-            )
-          ) : null}
+        {/* Dynamic Questions */}
+        {emailSearched ? (
+          loading ? (
+            <p>Loading...</p>
+          ) : (
+            Object.entries(groupedQuestions).map(([section, subsections]) => (
+              <fieldset key={section} className="mb-6">
+                <legend className="font-bold">
+                  <button
+                    type="button"
+                    onClick={() => toggleCollapse(section)}
+                    className="text-left w-full"
+                  >
+                    {sectionCounter++}. {section}
+                  </button>
+                </legend>
+                {!collapsedSections[section] &&
+                  Object.entries(subsections).map(([subsection, questions]) =>
+                    subsection === "No Subsection" ? (
+                      questions
+                        .filter((question) => !question.parent_question_id)
+                        .map((question) => (
+                          <div key={question.id}>
+                            {renderQuestion(question)}
+                          </div>
+                        ))
+                    ) : (
+                      <fieldset key={subsection} className="mb-6">
+                        <legend className="subLegend">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              toggleCollapse(`${section}-${subsection}`)
+                            }
+                            className="text-left w-full"
+                          >
+                            {subsection}
+                          </button>
+                        </legend>
+                        {!collapsedSections[`${section}-${subsection}`] &&
+                          questions
+                            .filter((question) => !question.parent_question_id)
+                            .map((question) => renderQuestion(question))}
+                      </fieldset>
+                    )
+                  )}
+              </fieldset>
+            ))
+          )
+        ) : null}
 
-          <div className="flex items-center justify-center"></div>
-        </form>
-      )}
+        <div className="flex items-center justify-center"></div>
+      </form>
+
       {/* Reminder Box */}
       <div className="fixed bottom-20  mb-8 right-8  text-gray-800 p-4 bg-[#0E2245] rounded-lg shadow-lg w-60">
         <p className="text-center font-semibold text-white">
