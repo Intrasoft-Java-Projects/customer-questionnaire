@@ -30,6 +30,7 @@ export default function DynamicForm() {
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
+  const [emailSearched, setEmailSearched] = useState(false);
 
   // State for collapsed/expanded fieldsets
   const [collapsedSections, setCollapsedSections] = useState<
@@ -196,7 +197,8 @@ export default function DynamicForm() {
       case "text":
         return (
           <label key={id} className="block">
-            <span className="whitespace-pre-line">{label}</span> {/* Enables line breaks */}
+            <span className="whitespace-pre-line">{label}</span>{" "}
+            {/* Enables line breaks */}
             <input
               type="text"
               name={String(id)}
@@ -210,8 +212,8 @@ export default function DynamicForm() {
       case "radio":
         return (
           <div key={id} className="mb-4">
-          <span className="block whitespace-pre-line">{label}</span>
-          {options?.map((option) => (
+            <span className="block whitespace-pre-line">{label}</span>
+            {options?.map((option) => (
               <label key={option.value} className="mr-4">
                 <input
                   type="radio"
@@ -263,8 +265,8 @@ export default function DynamicForm() {
       case "checkbox":
         return (
           <div key={id} className="mb-4">
-          <span className="block whitespace-pre-line">{label}</span>
-          {options?.map((option) => (
+            <span className="block whitespace-pre-line">{label}</span>
+            {options?.map((option) => (
               <label key={option.value} className="mr-4 flex items-center">
                 <input
                   type="checkbox"
@@ -283,8 +285,8 @@ export default function DynamicForm() {
       case "file":
         return (
           <label key={id} className="block mb-4">
-          <span className="whitespace-pre-line">{label}</span>
-          <input
+            <span className="whitespace-pre-line">{label}</span>
+            <input
               type="file"
               name={String(id)}
               onChange={(e) => handleFileChange(e, id)}
@@ -301,8 +303,8 @@ export default function DynamicForm() {
       case "textarea":
         return (
           <label key={id} className="block mb-4">
-          <span className="whitespace-pre-line">{label}</span>
-          <textarea
+            <span className="whitespace-pre-line">{label}</span>
+            <textarea
               name={String(id)}
               value={formData[id] || ""}
               onChange={handleChange}
@@ -386,6 +388,8 @@ export default function DynamicForm() {
   };
 
   const handleSearch = async () => {
+    setEmailSearched(true);
+
     if (!formData.contactEmail) {
       alert("Please enter an email to search.");
       return;
@@ -397,10 +401,10 @@ export default function DynamicForm() {
       // Step 1: Get Organization ID based on email
       const { data: orgData, error: orgError } = await supabase
         .from("organizations")
-        .select("id")
+        .select("id, contactName, jobTitle")
         .eq("contactEmail", formData.contactEmail)
         .single();
-
+      console.log("data for email = ", orgData);
       if (orgError) throw orgError;
       if (!orgData) {
         alert("No organization found for this email.");
@@ -409,7 +413,11 @@ export default function DynamicForm() {
       }
 
       const organizationId = orgData.id;
-
+      setFormData((prevData) => ({
+        ...prevData,
+        contactName: orgData.contactName, // Set contact name
+        jobTitle: orgData.jobTitle, // Set job title
+      }));
       // Step 2: Get responses for the organization
       const { data: responses, error: resError } = await supabase
         .from("responses")
@@ -438,7 +446,7 @@ export default function DynamicForm() {
       }
     } catch (error) {
       console.error("Error fetching progress:", error);
-      alert("Failed to retrieve saved progress.");
+      alert("No saved progress to retrieve.");
     } finally {
       setLoading(false);
     }
@@ -476,7 +484,8 @@ export default function DynamicForm() {
           <li>
             If you can’t finish in one session, click{" "}
             <span className="font-bold">Save Progress</span> at the bottom
-            right. When you return, enter your email, and click the magnifying glass to continue where you left off.
+            right. When you return, enter your email, and click the magnifying
+            glass to continue where you left off.
           </li>
           <li>
             Multiple respondents can fill out the same questionnaire but only
@@ -506,23 +515,28 @@ export default function DynamicForm() {
           {/* Customer Information */}
           <fieldset className="mb-6">
             <legend>Customer Information</legend>
-            <label className="block mb-4 relative">
+            <label className="block mb-4">
               Contact Email:
-              <div className="relative">
+              <span className="text-sm text-gray-500 ml-2">
+                (Please enter your email and click search to access the
+                questionnaire)
+              </span>
+              <div className="flex items-center mt-2">
                 <input
                   type="email"
                   name="contactEmail"
-                  className="w-full mt-2 p-2 border rounded pr-10"
+                  className="w-full p-2 border rounded"
                   value={formData.contactEmail || ""}
                   onChange={handleChange}
                   required
                 />
-                <span
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer hover:text-gray-600"
+                <button
+                  type="button"
+                  className="ml-2 bg-[#0E2245] text-white px-3 py-1 rounded-md hover:bg-indigo-700 transition"
                   onClick={handleSearch}
                 >
-                  <MagnifyingGlassIcon className="h-5 w-5" />
-                </span>
+                  Search
+                </button>
               </div>
             </label>
             <label className="block mb-4">
@@ -550,60 +564,70 @@ export default function DynamicForm() {
           </fieldset>
 
           {/* Dynamic Questions */}
-          {loading ? (
-            <p>Loading...</p>
-          ) : (
-            Object.entries(groupedQuestions).map(([section, subsections]) => (
-              <fieldset key={section} className="mb-6">
-                <legend className="font-bold">
-                  <button
-                    type="button"
-                    onClick={() => toggleCollapse(section)}
-                    className="text-left w-full"
-                  >
-                    {sectionCounter++}. {section}
-                  </button>
-                </legend>
-                {!collapsedSections[section] &&
-                  Object.entries(subsections).map(([subsection, questions]) =>
-                    subsection === "No Subsection" ? (
-                      questions
-                        .filter((question) => !question.parent_question_id)
-                        .map((question) => (
-                          <div key={question.id}>
-                            {renderQuestion(question)}
-                          </div>
-                        ))
-                    ) : (
-                      <fieldset key={subsection} className="mb-6">
-                        <legend className="subLegend">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              toggleCollapse(`${section}-${subsection}`)
-                            }
-                            className="text-left w-full"
-                          >
-                            {subsection}
-                          </button>
-                        </legend>
-                        {!collapsedSections[`${section}-${subsection}`] &&
-                          questions
-                            .filter((question) => !question.parent_question_id)
-                            .map((question) => renderQuestion(question))}
-                      </fieldset>
-                    )
-                  )}
-              </fieldset>
-            ))
-          )}
+          {emailSearched ? (
+            loading ? (
+              <p>Loading...</p>
+            ) : (
+              Object.entries(groupedQuestions).map(([section, subsections]) => (
+                <fieldset key={section} className="mb-6">
+                  <legend className="font-bold">
+                    <button
+                      type="button"
+                      onClick={() => toggleCollapse(section)}
+                      className="text-left w-full"
+                    >
+                      {sectionCounter++}. {section}
+                    </button>
+                  </legend>
+                  {!collapsedSections[section] &&
+                    Object.entries(subsections).map(([subsection, questions]) =>
+                      subsection === "No Subsection" ? (
+                        questions
+                          .filter((question) => !question.parent_question_id)
+                          .map((question) => (
+                            <div key={question.id}>
+                              {renderQuestion(question)}
+                            </div>
+                          ))
+                      ) : (
+                        <fieldset key={subsection} className="mb-6">
+                          <legend className="subLegend">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                toggleCollapse(`${section}-${subsection}`)
+                              }
+                              className="text-left w-full"
+                            >
+                              {subsection}
+                            </button>
+                          </legend>
+                          {!collapsedSections[`${section}-${subsection}`] &&
+                            questions
+                              .filter(
+                                (question) => !question.parent_question_id
+                              )
+                              .map((question) => renderQuestion(question))}
+                        </fieldset>
+                      )
+                    )}
+                </fieldset>
+              ))
+            )
+          ) : null}
 
           <div className="flex items-center justify-center"></div>
         </form>
       )}
+      {/* Reminder Box */}
+      <div className="fixed bottom-20  mb-8 right-8  text-gray-800 p-4 bg-[#0E2245] rounded-lg shadow-lg w-60">
+        <p className="text-center font-semibold text-white">
+          Make sure to save your progress before leaving!
+        </p>
+      </div>
       <button
         onClick={handleSubmit}
-        className="fixed bottom-8 right-8 bg-[#0E2245] text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-[#0C1C38] transition-colors"
+        className="fixed bottom-8  right-8 bg-[#0E2245] text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-[#0C1C38] transition-colors"
       >
         Save Progress
       </button>
