@@ -388,13 +388,11 @@ export default function DynamicForm() {
   };
 
   const handleSearch = async () => {
-    setEmailSearched(true);
-
     if (!formData.contactEmail) {
       alert("Please enter an email to search.");
       return;
     }
-
+    setEmailSearched(true);
     setLoading(true);
 
     try {
@@ -527,7 +525,7 @@ export default function DynamicForm() {
               />
               <button
                 type="button"
-                className="ml-2 bg-[#0E2245] text-white px-3 py-1 rounded-md hover:bg-indigo-700 transition"
+                className="ml-2 bg-[#0E2245] text-white px-3 py-1 rounded-md transition-all duration-300 ease-in-out hover:bg-[#091C36] hover:scale-105"
                 onClick={handleSearch}
               >
                 Search
@@ -620,7 +618,8 @@ export default function DynamicForm() {
       </div>
       <button
         onClick={handleSubmit}
-        className="fixed bottom-8  right-8 bg-[#0E2245] text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-[#0C1C38] transition-colors"
+        className="fixed bottom-8 right-8 bg-[#0E2245] text-white font-bold py-3 px-6 rounded-full shadow-lg 
+        hover:bg-[#0C1C38] hover:scale-110 transition-transform transition-colors duration-300 ease-in-out"
       >
         Save Progress
       </button>

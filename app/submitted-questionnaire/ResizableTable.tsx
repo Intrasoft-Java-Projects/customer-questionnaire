@@ -59,7 +59,7 @@ export default function ResizableTable({
   return (
     <div className="overflow-x-auto bg-white rounded-lg shadow-md">
       <table ref={tableRef} className="min-w-full text-sm text-left text-gray-800 border border-gray-300">
-        <thead className="bg-indigo-600 text-white sticky top-0 z-10">
+        <thead className="bg-[#0E2245] text-white sticky top-0 z-10">
           <tr>
             {tableHeaders.map((header, index) => (
               <th
