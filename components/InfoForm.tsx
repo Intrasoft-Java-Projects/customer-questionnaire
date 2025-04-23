@@ -99,6 +99,7 @@ export default function DynamicForm() {
   
   const title = courseTitles[formId];
 
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
