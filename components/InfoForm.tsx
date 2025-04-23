@@ -90,6 +90,16 @@ export default function DynamicForm() {
     console.log("Updated formData:", formData);
   }, [formData]);
 
+  const courseTitles: Record<number, string> = {
+    24: "Oracle DBA Fundamentals I Training",
+    25: "Oracle DBA Fundamentals II Training",
+    26: "EBS Install, Patch and Maintain Training",
+    27: "EBS System Administrator Training",
+  };
+  
+  const title = courseTitles[formId];
+
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -470,31 +480,42 @@ export default function DynamicForm() {
         height={200}
         className="m-4"
       />
-      <h1 className="text-2xl font-bold text-primary m-4">
-        Discovery Questionnaire
-      </h1>
+      <h2 className="text-xl font-semibold  border-primary pb-3 pt-2 text-primary">
+        Training Evaluation Analysis
+      </h2>
 
-      <div className="px-8 py-4 max-w-3xl w-full text-primary">
-        <p className="mb-4 text-lg">
-          Thank you for taking the time to complete this questionnaire.
-        </p>
-        <ul className="list-disc list-inside space-y-2 text-primary ">
+      <div className="px-8 py-6 max-w-3xl w-full text-primary space-y-4">
+        <h2 className="text-xl font-semibold border-b border-primary pb-2">
+          Training Course Title: <span className="font-normal">{title}</span>
+        </h2>
+        <h3 className="text-lg font-medium">
+          Trainer Name : Yazan Abdelrahman
+        </h3>
+
+        <h3 className="text-lg font-medium underline">Guidelines:</h3>
+
+        <ul className="list-disc list-inside space-y-2">
           <li>
-            If you can’t finish in one session, click{" "}
-            <span className="font-bold">Save Progress</span> at the bottom
-            right. When you return, enter your email, and click the magnifying
-            glass to continue where you left off.
+            The assessment considers the total number of responses for each
+            evaluation point entered in the table.
           </li>
           <li>
-            Multiple respondents can fill out the same questionnaire but only
-            need to answer the sections relevant to their role.
+            Rating Scale:
+            <ul className="list-disc list-inside ml-6">
+              <li>Excellent = 5</li>
+              <li>Very Good = 4</li>
+              <li>Satisfactory = 3</li>
+              <li>Acceptable = 2</li>
+              <li>Unacceptable = 1</li>
+            </ul>
           </li>
           <li>
-            Please complete all fields in your section(s) and provide detailed
-            responses in the text boxes.
+            The score is calculated based on the average of the available
+            evaluations.
           </li>
         </ul>
-        <p className="mt-4">
+
+        <p className="pt-4 italic">
           Your insights are invaluable in helping us understand the challenges
           you face.
         </p>
