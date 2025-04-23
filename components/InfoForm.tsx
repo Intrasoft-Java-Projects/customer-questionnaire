@@ -90,12 +90,13 @@ export default function DynamicForm() {
     console.log("Updated formData:", formData);
   }, [formData]);
 
-  const courseTitles = {
+  const courseTitles: Record<number, string> = {
     24: "Oracle DBA Fundamentals I Training",
     25: "Oracle DBA Fundamentals II Training",
     26: "EBS Install, Patch and Maintain Training",
     27: "EBS System Administrator Training",
   };
+  
   const title = courseTitles[formId];
 
   const handleSubmit = async (e: React.FormEvent) => {
