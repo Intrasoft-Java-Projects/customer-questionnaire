@@ -96,10 +96,18 @@ export default function DynamicForm() {
     26: "EBS Install, Patch and Maintain Training",
     27: "EBS System Administrator Training",
   };
-  
+
   const title = courseTitles[formId];
 
-  
+  const courseDates: Record<number, string> = {
+    24: "Date: 13 April – 16 April 2025",
+    25: "Date: 20 April – 22 April 2025",
+    26: "",
+    27: "",
+  };
+
+  const date = courseDates[formId];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -475,7 +483,7 @@ export default function DynamicForm() {
     <div className="flex flex-col items-center justify-center bg-gray-50">
       <Image
         alt="logo"
-        src="/netcompany-intrasoft-logo.png"
+        src="/netcompany-intrasoft-logo.jpg"
         width={200}
         height={200}
         className="m-4"
@@ -491,7 +499,7 @@ export default function DynamicForm() {
         <h3 className="text-lg font-medium">
           Trainer Name : Yazan Abdelrahman
         </h3>
-
+        <h3 className="text-lg font-medium">{date}</h3>
         <h3 className="text-lg font-medium underline">Guidelines:</h3>
 
         <ul className="list-disc list-inside space-y-2">
@@ -514,11 +522,6 @@ export default function DynamicForm() {
             evaluations.
           </li>
         </ul>
-
-        <p className="pt-4 italic">
-          Your insights are invaluable in helping us understand the challenges
-          you face.
-        </p>
       </div>
 
       <form
