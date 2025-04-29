@@ -483,16 +483,16 @@ export default function DynamicForm() {
     <div className="flex flex-col items-center justify-center bg-gray-50">
       <Image
         alt="logo"
-        src="/netcompany-intrasoft-logo.jpg"
+        src="/netcompany-intrasoft-logo2.png"
         width={200}
         height={200}
         className="m-4"
       />
       <h2 className="text-xl font-semibold  border-primary pb-3 pt-2 text-primary">
-        Training Evaluation Analysis
+        ERP Discovery Questionnaire
       </h2>
 
-      <div className="px-8 py-6 max-w-3xl w-full text-primary space-y-4">
+      {/* <div className="px-8 py-6 max-w-3xl w-full text-primary space-y-4">
         <h2 className="text-xl font-semibold border-b border-primary pb-2">
           Training Course Title: <span className="font-normal">{title}</span>
         </h2>
@@ -521,8 +521,8 @@ export default function DynamicForm() {
             The score is calculated based on the average of the available
             evaluations.
           </li>
-        </ul>
-      </div>
+        </ul> */}
+      {/* </div> */}
 
       <form
         className="bg-white shadow-lg p-8 rounded-lg max-w-3xl w-full"
