@@ -62,17 +62,17 @@ export default function SubmittedQuestionnaire() {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchFormIds = async () => {
-      let allData: { form_id: number; form_name: string }[] = []; // Explicitly define type
+      let allData: { id: number; name: string }[] = []; // Explicitly define type
       let hasMoreData = true;
       let offset = 0;
       const limit = 1000; // Fetch 1000 records at a time
       while (hasMoreData) {
         const { data, error } = await supabase
-          .from("questions")
-          .select("form_id, form_name")
+          .from("forms")
+          .select("id, name")
           .order("id")
           .range(offset, offset + limit - 1); // Fetch records in chunks of 1000
-
+          console.log(data)
         if (error) {
           console.error("Error fetching form ids: ", error.message);
           break;
@@ -80,6 +80,7 @@ export default function SubmittedQuestionnaire() {
 
         if (data && data.length > 0) {
           allData = allData.concat(data); // Add the fetched data to allData array
+          console.log("allData =",allData)
           offset += limit; // Increase the offset for the next batch
         } else {
           hasMoreData = false; // No more data to fetch
@@ -90,8 +91,8 @@ export default function SubmittedQuestionnaire() {
       const uniqueForms = Array.from(
         new Map(
           allData.map((item) => [
-            `${item.form_id}-${item.form_name}`, // Ensure uniqueness by form_id and form_name
-            { formId: item.form_id, formName: item.form_name },
+            `${item.id}-${item.name}`, // Ensure uniqueness by form_id and form_name
+            { formId: item.id, formName: item.name },
           ])
         ).values()
       );
@@ -357,8 +358,9 @@ export default function SubmittedQuestionnaire() {
               : [response.organizations];
 
             organizations.forEach((org: Organization) => {
-              const userName = org.contactName || "Unknown";
-
+              const rawName = org.contactEmail || "Unknown";
+              console.log("name ",rawName)
+              const userName = rawName.includes("@") ? rawName.split("@")[0] : rawName;
               if (!userMap.has(userName)) {
                 userMap.set(userName, {});
               }
@@ -502,7 +504,9 @@ export default function SubmittedQuestionnaire() {
             : [response.organizations];
 
           organizations.forEach((org) => {
-            const userName = org.contactName || "Unknown";
+            const rawName = org.contactEmail || "Unknown";
+            console.log("name ",rawName)
+            const userName = rawName.includes("@") ? rawName.split("@")[0] : rawName;
 
             // Initialize user data if not already created
             if (!userMap.has(userName)) {
@@ -678,7 +682,9 @@ export default function SubmittedQuestionnaire() {
 
             const userEmail =
               org.contactEmail || `unknown_${orgId}@example.com`; // Use email for uniqueness
-            const userName = org.contactName || "Unknown"; // Keep username
+              const rawName = org.contactEmail || "Unknown";
+              console.log("name ",rawName)
+              const userName = rawName.includes("@") ? rawName.split("@")[0] : rawName;
 
             if (!userList[userEmail]) {
               userList[userEmail] = {
@@ -818,7 +824,7 @@ export default function SubmittedQuestionnaire() {
                 </option>
                 {submittedData.map((user) => (
                   <option key={user.id} value={user.id}>
-                    {user.contactName}
+                    {user.contactEmail}
                   </option>
                 ))}
               </select>
