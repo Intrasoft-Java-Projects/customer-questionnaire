@@ -22,6 +22,11 @@ type Question = {
   condition_value?: string;
 };
 
+type Form = {
+  name: string;
+  description: string;
+  is_collapsed: boolean;
+};
 export default function DynamicForm() {
   const searchParams = useSearchParams();
   const formId = Number(searchParams.get("formid")); // Read formId from query string
@@ -31,7 +36,7 @@ export default function DynamicForm() {
   const [loading, setLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [emailSearched, setEmailSearched] = useState(false);
-
+  const [formInfo, setFormInfo] = useState<Form>();
   // State for collapsed/expanded fieldsets
   const [collapsedSections, setCollapsedSections] = useState<
     Record<string, boolean>
@@ -40,28 +45,52 @@ export default function DynamicForm() {
   useEffect(() => {
     if (!formId) return;
 
-    const fetchQuestions = async () => {
-      const { data, error } = await supabase
+    const fetchData = async () => {
+      setLoading(true);
+
+      // Fetch questions
+      const { data: questionsData, error: questionsError } = await supabase
         .from("questions")
         .select("*")
-        .eq("form_id", formId) // Fetch questions for the specific form
+        .eq("form_id", formId)
         .eq("status", true)
         .order("id");
-      if (error) console.error("Error fetching questions:", error.message);
-      setQuestions(data || []);
 
-      // Initialize all sections as collapsed
-      const initialCollapsedState: Record<string, boolean> = {};
-      data?.forEach((q) => {
-        if (q.section) initialCollapsedState[q.section] = true;
-        if (q.subsection)
-          initialCollapsedState[`${q.section}-${q.subsection}`] = true;
-      });
+      if (questionsError) {
+        console.error("Error fetching questions:", questionsError.message);
+      } else {
+        setQuestions(questionsData || []);
 
-      setCollapsedSections(initialCollapsedState);
+      }
+
+      // Fetch form metadata
+      const { data: formMeta, error: formError } = await supabase
+        .from("forms")
+        .select("name, description, is_collapsed")
+        .eq("id", formId)
+        .single();
+
+      if (formError) {
+        console.error("Error fetching form metadata:", formError.message);
+      } else {
+        setFormInfo(formMeta);
+        console.log("Form metadata:", formMeta);
+        // You can store this in state if needed
+        // setFormMetadata(formMeta);
+      }
+      
+        // Initialize all sections as collapsed
+        const initialCollapsedState: Record<string, boolean> = {};
+        questionsData?.forEach((q) => {
+          if (q.section) initialCollapsedState[q.section] = formMeta?.is_collapsed;
+          if (q.subsection)
+            initialCollapsedState[`${q.section}-${q.subsection}`] = formMeta?.is_collapsed;
+        });
+        setCollapsedSections(initialCollapsedState);
       setLoading(false);
     };
-    fetchQuestions();
+
+    fetchData();
   }, [formId]);
 
   const handleChange = (
@@ -423,7 +452,7 @@ export default function DynamicForm() {
       console.log("data for email = ", orgData);
       if (orgError) throw orgError;
       if (!orgData) {
-        alert("No organization found for this email.");
+        // alert("No organization found for this email.");
         setLoading(false);
         return;
       }
@@ -443,7 +472,7 @@ export default function DynamicForm() {
       if (resError) throw resError;
 
       if (responses.length === 0) {
-        alert("No saved progress found for this email.");
+        // alert("No saved progress found for this email.");
       } else {
         // Step 3: Populate the form with retrieved data
         const savedData: Record<string, any> = {};
@@ -462,7 +491,7 @@ export default function DynamicForm() {
       }
     } catch (error) {
       console.error("Error fetching progress:", error);
-      alert("No saved progress to retrieve.");
+      // alert("No saved progress to retrieve.");
     } finally {
       setLoading(false);
     }
@@ -489,41 +518,18 @@ export default function DynamicForm() {
         className="m-4"
       />
       <h2 className="text-xl font-semibold  border-primary pb-3 pt-2 text-primary">
-        ERP Discovery Questionnaire
+        {formInfo?.name}
       </h2>
-
-      {/* <div className="px-8 py-6 max-w-3xl w-full text-primary space-y-4">
-        <h2 className="text-xl font-semibold border-b border-primary pb-2">
-          Training Course Title: <span className="font-normal">{title}</span>
-        </h2>
-        <h3 className="text-lg font-medium">
-          Trainer Name : Yazan Abdelrahman
-        </h3>
-        <h3 className="text-lg font-medium">{date}</h3>
-        <h3 className="text-lg font-medium underline">Guidelines:</h3>
-
-        <ul className="list-disc list-inside space-y-2">
-          <li>
-            The assessment considers the total number of responses for each
-            evaluation point entered in the table.
-          </li>
-          <li>
-            Rating Scale:
-            <ul className="list-disc list-inside ml-6">
-              <li>Excellent = 5</li>
-              <li>Very Good = 4</li>
-              <li>Satisfactory = 3</li>
-              <li>Acceptable = 2</li>
-              <li>Unacceptable = 1</li>
-            </ul>
-          </li>
-          <li>
-            The score is calculated based on the average of the available
-            evaluations.
-          </li>
-        </ul> */}
-      {/* </div> */}
-
+      <div
+        className="px-8 py-4 max-w-3xl w-full text-primary"
+        dangerouslySetInnerHTML={{
+          __html: (formInfo?.description || "").replace(
+            /className=/g,
+            "class="
+          ),
+        }}
+      />
+       
       <form
         className="bg-white shadow-lg p-8 rounded-lg max-w-3xl w-full"
         onSubmit={handleSubmit}
@@ -531,9 +537,9 @@ export default function DynamicForm() {
       >
         {/* Customer Information */}
         <fieldset className="mb-6">
-          <legend>Customer Information</legend>
+          <legend>Email</legend>
           <label className="block mb-4">
-            Contact Email:
+          
             <span className="text-sm text-gray-500 ml-2">
               (Please enter your email and click search to access the
               questionnaire)
@@ -556,7 +562,7 @@ export default function DynamicForm() {
               </button>
             </div>
           </label>
-          <label className="block mb-4">
+          {/* <label className="block mb-4">
             Contact Name:
             <input
               type="text"
@@ -577,7 +583,7 @@ export default function DynamicForm() {
               onChange={handleChange}
               required
             />
-          </label>
+          </label> */}
         </fieldset>
 
         {/* Dynamic Questions */}
