@@ -233,6 +233,13 @@
   dependencies:
     undici-types "~5.26.4"
 
+"@types/papaparse@^5.3.16":
+  version "5.3.16"
+  resolved "https://registry.yarnpkg.com/@types/papaparse/-/papaparse-5.3.16.tgz#320c8f6b8c9be898fe2d0c1b21aee51448bf9dca"
+  integrity sha512-T3VuKMC2H0lgsjI9buTB3uuKj3EMD2eap1MOuEQuBQ44EnDx/IkGhU6EwiTf9zG3za4SKlmwKAImdDKdNnCsXg==
+  dependencies:
+    "@types/node" "*"
+
 "@types/phoenix@^1.5.4":
   version "1.6.6"
   resolved "https://registry.yarnpkg.com/@types/phoenix/-/phoenix-1.6.6.tgz#3c1ab53fd5a23634b8e37ea72ccacbf07fbc7816"
@@ -831,6 +838,11 @@ package-json-from-dist@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/package-json-from-dist/-/package-json-from-dist-1.0.1.tgz#4f1471a010827a86f94cfd9b0727e36d267de505"
   integrity sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==
+
+papaparse@^5.5.2:
+  version "5.5.2"
+  resolved "https://registry.yarnpkg.com/papaparse/-/papaparse-5.5.2.tgz#fb67cc5a03ba8930cb435dc4641a25d6804bd4d7"
+  integrity sha512-PZXg8UuAc4PcVwLosEEDYjPyfWnTEhOrUfdv+3Bx+NuAb+5NhDmXzg5fHWmdCh1mP5p7JAZfFr3IMQfcntNAdA==
 
 path-key@^3.1.0:
   version "3.1.1"
