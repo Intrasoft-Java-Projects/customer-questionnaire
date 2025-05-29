@@ -6,6 +6,7 @@ import { saveAs } from "file-saver";
 import { Console } from "console";
 import ResizableTable from "@/app/submitted-questionnaire/ResizableTable";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useSearchParams } from 'next/navigation';
 
 type UserAnswer = {
   question: string;
@@ -35,7 +36,15 @@ export default function SubmittedQuestionnaire() {
   const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const searchParams = useSearchParams();
+    const user = searchParams.get('user');
 
+    useEffect(() => {
+      const ok=()=>{
+        console.log("user = ", user)
+      }
+      ok();
+    },[])
   // State to store the fetched form IDs and submitted data
   // const [formIds, setFormIds] = useState<number[]>([]);
   const [forms, setForms] = useState<{ formId: any; formName: any }[]>([]);
@@ -60,52 +69,70 @@ export default function SubmittedQuestionnaire() {
   const [tableHeaders, setTableHeaders] = useState<string[]>(["User Name"]);
   const [tableData, setTableData] = useState<any[][]>([]);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchFormIds = async () => {
-      let allData: { id: number; name: string }[] = []; // Explicitly define type
-      let hasMoreData = true;
-      let offset = 0;
-      const limit = 1000; // Fetch 1000 records at a time
-      while (hasMoreData) {
+      if (user === 'form30') {
+        // 👉 Fetch only form 30
         const { data, error } = await supabase
-          .from("forms")
-          .select("id, name")
-          .order("id")
-          .range(offset, offset + limit - 1); // Fetch records in chunks of 1000
-          console.log(data)
+          .from('forms')
+          .select('id, name')
+          .eq('id', 30); // or .eq('name', 'form30') depending on your schema
+
         if (error) {
-          console.error("Error fetching form ids: ", error.message);
-          break;
+          console.error('Error fetching form30: ', error.message);
+          return;
         }
 
-        if (data && data.length > 0) {
-          allData = allData.concat(data); // Add the fetched data to allData array
-          console.log("allData =",allData)
-          offset += limit; // Increase the offset for the next batch
-        } else {
-          hasMoreData = false; // No more data to fetch
+        const mapped = (data || []).map(item => ({
+          formId: item.id,
+          formName: item.name,
+        }));
+        setForms(mapped);
+      } else {
+        // 🧠 Default behavior: fetch all in batches
+        let allData: { id: number; name: string }[] = [];
+        let hasMoreData = true;
+        let offset = 0;
+        const limit = 1000;
+
+        while (hasMoreData) {
+          const { data, error } = await supabase
+            .from('forms')
+            .select('id, name')
+            .order('id')
+            .range(offset, offset + limit - 1);
+
+          if (error) {
+            console.error('Error fetching forms: ', error.message);
+            break;
+          }
+
+          if (data && data.length > 0) {
+            allData = allData.concat(data);
+            offset += limit;
+          } else {
+            hasMoreData = false;
+          }
         }
+
+        const uniqueForms = Array.from(
+          new Map(
+            allData.map(item => [
+              `${item.id}-${item.name}`,
+              { formId: item.id, formName: item.name },
+            ])
+          ).values()
+        );
+
+        const sortedForms = uniqueForms.sort((a, b) => a.formId - b.formId);
+        setForms(sortedForms);
       }
-
-      // Remove duplicates by form_id and form_name
-      const uniqueForms = Array.from(
-        new Map(
-          allData.map((item) => [
-            `${item.id}-${item.name}`, // Ensure uniqueness by form_id and form_name
-            { formId: item.id, formName: item.name },
-          ])
-        ).values()
-      );
-
-      // Sort the forms by form_id (ascending)
-      const sortedForms = uniqueForms.sort((a, b) => a.formId - b.formId);
-
-      // Set the sorted and unique forms
-      setForms(sortedForms);
     };
 
     fetchFormIds();
   }, []);
+
 
   // useEffect(() => {
   //   const fetchUsers = async () => {
@@ -793,9 +820,11 @@ export default function SubmittedQuestionnaire() {
                 className="p-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0E2245] outline-none"
               >
                 <option value="">-- Select Form --</option>
-                <option key={0} value={0}>
-                  All forms
-                </option>
+               {user !== "form30" && (
+                  <option key={0} value={0}>
+                    All forms
+                  </option>
+                )}
                 {forms.map((form) => (
                   <option key={form.formId} value={form.formId}>
                     Form {form.formId} - {form.formName}

@@ -37,6 +37,8 @@ export default function DynamicForm() {
   const [submitted, setSubmitted] = useState(false);
   const [emailSearched, setEmailSearched] = useState(false);
   const [formInfo, setFormInfo] = useState<Form>();
+  const [isMandatory, setIsMandatory] = useState<Record<string, boolean>>({});
+
   // State for collapsed/expanded fieldsets
   const [collapsedSections, setCollapsedSections] = useState<
     Record<string, boolean>
@@ -60,13 +62,12 @@ export default function DynamicForm() {
         console.error("Error fetching questions:", questionsError.message);
       } else {
         setQuestions(questionsData || []);
-
       }
 
       // Fetch form metadata
       const { data: formMeta, error: formError } = await supabase
         .from("forms")
-        .select("name, description, is_collapsed")
+        .select("name, description, is_collapsed, is_mandatory")
         .eq("id", formId)
         .single();
 
@@ -74,19 +75,22 @@ export default function DynamicForm() {
         console.error("Error fetching form metadata:", formError.message);
       } else {
         setFormInfo(formMeta);
+        console.log("formMeta = ", formMeta);
         console.log("Form metadata:", formMeta);
         // You can store this in state if needed
         // setFormMetadata(formMeta);
       }
-      
-        // Initialize all sections as collapsed
-        const initialCollapsedState: Record<string, boolean> = {};
-        questionsData?.forEach((q) => {
-          if (q.section) initialCollapsedState[q.section] = formMeta?.is_collapsed;
-          if (q.subsection)
-            initialCollapsedState[`${q.section}-${q.subsection}`] = formMeta?.is_collapsed;
-        });
-        setCollapsedSections(initialCollapsedState);
+      setIsMandatory(formMeta?.is_mandatory);
+      // Initialize all sections as collapsed
+      const initialCollapsedState: Record<string, boolean> = {};
+      questionsData?.forEach((q) => {
+        if (q.section)
+          initialCollapsedState[q.section] = formMeta?.is_collapsed;
+        if (q.subsection)
+          initialCollapsedState[`${q.section}-${q.subsection}`] =
+            formMeta?.is_collapsed;
+      });
+      setCollapsedSections(initialCollapsedState);
       setLoading(false);
     };
 
@@ -138,6 +142,16 @@ export default function DynamicForm() {
   const date = courseDates[formId];
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log(isMandatory);
+    if (isMandatory) {
+      for (const question of questions) {
+        let answer = formData[question.id] || "";
+        if (answer === "") {
+          window.alert("All questions must be answered!");
+          return;
+        }
+      }
+    }
     e.preventDefault();
     setLoading(true);
     try {
@@ -529,7 +543,7 @@ export default function DynamicForm() {
           ),
         }}
       />
-       
+
       <form
         className="bg-white shadow-lg p-8 rounded-lg max-w-3xl w-full"
         onSubmit={handleSubmit}
@@ -539,7 +553,6 @@ export default function DynamicForm() {
         <fieldset className="mb-6">
           <legend>Email</legend>
           <label className="block mb-4">
-          
             <span className="text-sm text-gray-500 ml-2">
               (Please enter your email and click search to access the
               questionnaire)
